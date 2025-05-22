@@ -3,8 +3,25 @@
 {% block title %}견적 관리{% endblock %}
 
 {% block content %}
+
+<!-- ✅ 상단 탭 메뉴 -->
+<div class="container mb-3">
+  <div class="d-flex flex-wrap gap-2">
+    <button class="btn btn-outline-dark btn-sm">견적번호</button>
+    <button class="btn btn-outline-dark btn-sm">상태</button>
+    <button class="btn btn-outline-dark btn-sm">고객명</button>
+    <button class="btn btn-outline-dark btn-sm">연락처</button>
+    <button class="btn btn-outline-dark btn-sm">여행지</button>
+    <button class="btn btn-outline-dark btn-sm">여행기간</button>
+    <button class="btn btn-outline-dark btn-sm">총인원</button>
+    <button class="btn btn-outline-dark btn-sm">기타 요청사항</button>
+    <button class="btn btn-outline-dark btn-sm">등록일</button>
+  </div>
+</div>
+
 <div class="container mt-4">
   <h2>맞춤 견적 요청 목록</h2>
+
   <table class="table table-bordered mt-4">
     <thead class="table-light">
       <tr>
@@ -24,10 +41,11 @@
         <td>{{ q.phone }}</td>
         <td>{{ q.start_date }} ~ {{ q.end_date }}</td>
         <td>{{ q.adult_count + q.child_count + q.infant_count }}</td>
-        <td>{{ q.created_at.strftime('%Y-%m-%d') }}</td>
+        <td>{{ q.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
+
 {% endblock %}
