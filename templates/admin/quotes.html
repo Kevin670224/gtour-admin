@@ -4,22 +4,46 @@
 
 {% block content %}
 
-<!-- ✅ 상단 필터 영역 -->
+<!-- 🔍 상단 필터 영역 -->
 <div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <div><strong>총견적:</strong> {{ quotes|length }}</div>
-    <div class="d-flex gap-2 align-items-center">
-      <input type="date" class="form-control form-control-sm" placeholder="견적 요청일">
-      <input type="text" class="form-control form-control-sm" placeholder="고객명 입력">
-      <button class="btn btn-sm btn-primary">Search</button>
-      <button class="btn btn-sm btn-outline-danger">🗑 휴지통</button>
+  <form method="GET" class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex gap-2 align-items-center flex-wrap">
+
+      <!-- 상태 선택 -->
+      <select name="status" class="form-select form-select-sm" style="width: 170px;">
+        <option value="">상태 선택</option>
+        <option>견적요청</option>
+        <option>상담중</option>
+        <option>견적완료 (발송 완료)</option>
+        <option>견적완료 (발송 대기)</option>
+        <option>견적보류</option>
+        <option>예약금 입금 완료</option>
+        <option>견적삭제 (휴지통)</option>
+      </select>
+
+      <!-- 날짜 선택 -->
+      <input type="date" name="request_date" class="form-control form-control-sm" placeholder="견적 요청일">
+
+      <!-- 고객명 입력 -->
+      <input type="text" name="customer_name" class="form-control form-control-sm" placeholder="고객명 입력">
+
+      <!-- 검색 버튼 -->
+      <button type="submit" class="btn btn-sm btn-primary">Search</button>
+
+      <!-- 휴지통 버튼 -->
+      <a href="?status=견적삭제 (휴지통)" class="btn btn-sm btn-outline-danger">
+        🗑 휴지통
+      </a>
     </div>
-  </div>
 
-  <h4>맞춤 견적 요청 목록</h4>
+    <!-- 총견적 -->
+    <div class="ms-3"><strong>총견적:</strong> {{ quotes|length }}</div>
+  </form>
 
-  <!-- ✅ 견적 목록 테이블 -->
-  <table class="table table-bordered mt-3">
+  <h4 class="mb-3">맞춤 견적 요청 목록</h4>
+
+  <!-- 📋 견적 목록 테이블 -->
+  <table class="table table-bordered table-hover">
     <thead class="table-light">
       <tr>
         <th>견적번호</th>
@@ -36,7 +60,20 @@
       {% for q in quotes %}
       <tr>
         <td>{{ q.quote_number }}</td>
-        <td>{{ q.status }}</td>
+
+        <!-- 상태 변경 드롭다운 -->
+        <td>
+          <select class="form-select form-select-sm">
+            <option {% if q.status == '견적요청' %}selected{% endif %}>견적요청</option>
+            <option {% if q.status == '상담중' %}selected{% endif %}>상담중</option>
+            <option {% if q.status == '견적완료 (발송 완료)' %}selected{% endif %}>견적완료 (발송 완료)</option>
+            <option {% if q.status == '견적완료 (발송 대기)' %}selected{% endif %}>견적완료 (발송 대기)</option>
+            <option {% if q.status == '견적보류' %}selected{% endif %}>견적보류</option>
+            <option {% if q.status == '예약금 입금 완료' %}selected{% endif %}>예약금 입금 완료</option>
+            <option {% if q.status == '견적삭제 (휴지통)' %}selected{% endif %}>견적삭제 (휴지통)</option>
+          </select>
+        </td>
+
         <td>{{ q.customer_name }}</td>
         <td>{{ q.phone }}</td>
         <td>{{ q.country }} > {{ q.city }}</td>
