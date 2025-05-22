@@ -3,6 +3,31 @@
 {% block title %}견적 관리{% endblock %}
 
 {% block content %}
-<h1>견적 관리 페이지</h1>
-<p>여기에서 견적 목록과 상태를 관리할 수 있습니다.</p>
+<div class="container mt-4">
+  <h2>맞춤 견적 요청 목록</h2>
+  <table class="table table-bordered mt-4">
+    <thead class="table-light">
+      <tr>
+        <th>견적번호</th>
+        <th>고객명</th>
+        <th>연락처</th>
+        <th>여행기간</th>
+        <th>총 인원</th>
+        <th>등록일</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for q in quotes %}
+      <tr>
+        <td>{{ q.quote_number }}</td>
+        <td>{{ q.customer_name }}</td>
+        <td>{{ q.phone }}</td>
+        <td>{{ q.start_date }} ~ {{ q.end_date }}</td>
+        <td>{{ q.adult_count + q.child_count + q.infant_count }}</td>
+        <td>{{ q.created_at.strftime('%Y-%m-%d') }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endblock %}
