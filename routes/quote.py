@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, flash
+from flask import Blueprint, render_template, request, redirect, flash, url_for
 from models import db, Quote
 from datetime import datetime
 
@@ -60,7 +60,8 @@ def submit_quote():
         print("❌ 저장 오류:", e)
         flash("⚠️ 저장 중 오류가 발생했습니다.", "danger")
 
-    return redirect("https://guide4u.kr")  # ✅ 홈페이지로 리디렉션
+    # ✅ 외부 도메인 → 내부 경로로 변경하여 오류 방지
+    return redirect(url_for('quote.show_quote_form'))
 
 # ✅ 관리자 견적 작성(수정) 폼
 @quote_bp.route("/admin/quotes/<int:quote_id>/edit", methods=["GET", "POST"])
