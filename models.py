@@ -50,6 +50,7 @@ class Reservation(db.Model):
         self.quote_no = f"Q{now_str}{str(uuid.uuid4().hex)[:4].upper()}"
         self.reservation_no = f"R{now_str}{str(uuid.uuid4().hex)[:4].upper()}"
 
+
 # -----------------------------
 # ✅ 견적 모델 (Quote)
 # -----------------------------
@@ -88,6 +89,7 @@ class Quote(db.Model):
     requirements = db.Column(db.Text)
     status = db.Column(db.String(50), default="견적요청")
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
 
 # -----------------------------
 # ✅ 여행상품 모델 (Product)
