@@ -1,0 +1,36 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}상품 등록{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">📝 상품 등록</h2>
+  <form method="POST" action="/admin/products/create">
+    <div class="mb-3">
+      <label for="country" class="form-label">국가 *</label>
+      <select class="form-select" id="country" name="country" required>
+        <option value="">선택</option>
+        <option value="태국">태국</option>
+        <option value="베트남">베트남</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="region" class="form-label">지역 *</label>
+      <select class="form-select" id="region" name="region" required>
+        <option value="">선택</option>
+        <option value="방콕">방콕</option>
+        <option value="푸켓">푸켓</option>
+        <option value="다낭">다낭</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="name" class="form-label">상품 이름 *</label>
+      <input type="text" class="form-control" id="name" name="name" required placeholder="예: 방콕 + 파타야 패키지 4박 6일">
+    </div>
+
+    <button type="submit" class="btn btn-primary">등록</button>
+  </form>
+</div>
+{% endblock %}

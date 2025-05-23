@@ -67,14 +67,13 @@ class Quote(db.Model):
     country = db.Column(db.String(50))
     region = db.Column(db.String(50))
     product = db.Column(db.String(100))
-    product_name = db.Column(db.String(100))
+    product_name = db.Column(db.String(100))  # 자동입력되는 상품명
 
-    destination = db.Column(db.String(100))  # ✅ 새로 추가된 필드
-    travel_period = db.Column(db.String(50))  # "출발일 ~ 도착일" 형태의 문자열
+    travel_period = db.Column(db.String(50))  # 예: "2025-06-01 ~ 2025-06-05"
 
-    adult = db.Column(db.Integer)
-    child = db.Column(db.Integer)
-    infant = db.Column(db.Integer)
+    adult_count = db.Column(db.Integer)
+    child_count = db.Column(db.Integer)
+    infant_count = db.Column(db.Integer)
 
     flight_status = db.Column(db.String(50))
     flight_detail = db.Column(db.String(100))
