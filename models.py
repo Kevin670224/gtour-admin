@@ -69,8 +69,10 @@ class Quote(db.Model):
     product = db.Column(db.String(100))
     product_name = db.Column(db.String(100))
 
-    destination = db.Column(db.String(100))  # ✅ 새로 추가된 필드
+    destination = db.Column(db.String(100))
     travel_period = db.Column(db.String(50))  # "출발일 ~ 도착일" 형태의 문자열
+    start_date = db.Column(db.String(20))     # ✅ 새로 추가
+    end_date = db.Column(db.String(20))       # ✅ 새로 추가
 
     adult = db.Column(db.Integer)
     child = db.Column(db.Integer)
