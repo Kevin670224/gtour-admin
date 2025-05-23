@@ -43,6 +43,8 @@ def submit_quote():
         flight_status=request.form.get("flight_status"),
         flight_detail=request.form.get("flight_detail"),
 
+        departure_airport=request.form.get("departure_airport"),  # ✅ 출발 공항 저장
+
         resort_status=request.form.get("resort_status"),
         resort_name=request.form.get("resort_name"),
         resort_style=", ".join(request.form.getlist("resort_style")),
@@ -58,7 +60,7 @@ def submit_quote():
         print("❌ 저장 오류:", e)
         flash("⚠️ 저장 중 오류가 발생했습니다.", "danger")
 
-    return redirect("/quote")
+    return redirect("https://guide4u.kr")  # ✅ 홈페이지로 리디렉션
 
 # ✅ 관리자 견적 작성(수정) 폼
 @quote_bp.route("/admin/quotes/<int:quote_id>/edit", methods=["GET", "POST"])
@@ -71,11 +73,13 @@ def edit_quote(quote_id):
         quote.travel_period = request.form.get("travel_period")
         quote.flight_status = request.form.get("flight_status")
         quote.flight_detail = request.form.get("flight_detail")
+        quote.departure_airport = request.form.get("departure_airport")  # ✅ 추가
+
         quote.resort_status = request.form.get("resort_status")
         quote.resort_style = ", ".join(request.form.getlist("resort_style"))
         quote.resort_name = request.form.get("resort_name")
         quote.requirements = request.form.get("requirements")
-        quote.status = "상담중"  # 상태 자동 변경
+        quote.status = "상담중"
 
         try:
             db.session.commit()

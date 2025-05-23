@@ -50,7 +50,6 @@ class Reservation(db.Model):
         self.quote_no = f"Q{now_str}{str(uuid.uuid4().hex)[:4].upper()}"
         self.reservation_no = f"R{now_str}{str(uuid.uuid4().hex)[:4].upper()}"
 
-
 # -----------------------------
 # ✅ 견적 모델 (Quote)
 # -----------------------------
@@ -71,8 +70,8 @@ class Quote(db.Model):
 
     destination = db.Column(db.String(100))
     travel_period = db.Column(db.String(50))  # "출발일 ~ 도착일" 형태의 문자열
-    start_date = db.Column(db.String(20))     # ✅ 새로 추가
-    end_date = db.Column(db.String(20))       # ✅ 새로 추가
+    start_date = db.Column(db.String(20))
+    end_date = db.Column(db.String(20))
 
     adult = db.Column(db.Integer)
     child = db.Column(db.Integer)
@@ -80,6 +79,7 @@ class Quote(db.Model):
 
     flight_status = db.Column(db.String(50))
     flight_detail = db.Column(db.String(100))
+    departure_airport = db.Column(db.String(50))  # ✅ 출발 공항 필드 추가
 
     resort_status = db.Column(db.String(50))
     resort_name = db.Column(db.String(100))
@@ -88,7 +88,6 @@ class Quote(db.Model):
     requirements = db.Column(db.Text)
     status = db.Column(db.String(50), default="견적요청")
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
 
 # -----------------------------
 # ✅ 여행상품 모델 (Product)
