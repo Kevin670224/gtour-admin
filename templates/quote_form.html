@@ -110,8 +110,20 @@
 
         <!-- 출발 공항 -->
         <div class="mb-3">
-          <label class="form-label">출발 공항 *</label>
-          <input type="text" class="form-control" name="departure_airport" placeholder="예: 인천공항" required>
+          <label class="form-label">출발 공항을 선택해 주세요! *</label>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="departure_airport" value="인천공항" id="airport_incheon">
+            <label class="form-check-label" for="airport_incheon">인천공항</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="departure_airport" value="김해공항" id="airport_gimhae">
+            <label class="form-check-label" for="airport_gimhae">김해공항</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="departure_airport" value="기타" id="airport_etc">
+            <label class="form-check-label" for="airport_etc">기타 - 직접 입력해 주세요! (예: 청주공항)</label>
+            <input type="text" class="form-control mt-1" name="departure_airport_other" placeholder="예: 청주공항">
+          </div>
         </div>
 
         <!-- 리조트 정보 -->
