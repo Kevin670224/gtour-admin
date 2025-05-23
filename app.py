@@ -5,6 +5,9 @@ import os
 def create_app():
     app = Flask(__name__, template_folder='templates')
 
+    # ✅ 세션 오류 방지를 위한 SECRET_KEY 설정
+    app.config['SECRET_KEY'] = 'guide4u-secret-key'  # 🔐 반드시 필요!
+
     # ✅ 경로 설정 (SQLite DB 사용)
     base_dir = os.path.abspath(os.path.dirname(__file__))
     db_path = os.path.join(base_dir, "instance", "database.db")
