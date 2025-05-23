@@ -5,11 +5,10 @@ import os
 def create_app():
     app = Flask(__name__, template_folder='templates')
 
-    # ✅ 경로 설정 (instance/database.db 사용)
+    # ✅ 경로 설정 (SQLite DB 사용)
     base_dir = os.path.abspath(os.path.dirname(__file__))
     db_path = os.path.join(base_dir, "instance", "database.db")
 
-    # ✅ DB 연결 설정
     app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{db_path}"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -44,4 +43,6 @@ def create_app():
 app = create_app()
 
 if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)
