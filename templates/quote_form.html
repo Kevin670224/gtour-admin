@@ -27,6 +27,9 @@
     font-size: 14px;
     margin-bottom: 30px;
   }
+  .form-section {
+    margin-bottom: 25px;
+  }
   .submit-btn {
     background-color: #007BFF;
     color: white;
@@ -37,8 +40,22 @@
     display: block;
     margin: 30px auto 0;
   }
-  .form-section {
-    margin-bottom: 25px;
+  .people-counter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .people-counter input {
+    width: 60px;
+    text-align: center;
+  }
+  .btn-counter {
+    padding: 5px 10px;
+  }
+  .total-count {
+    font-weight: bold;
+    margin-top: 10px;
   }
   .hidden {
     display: none;
@@ -56,23 +73,53 @@
   {% endwith %}
 
   <form method="POST" action="/quote">
+    {{ form.hidden_tag() if form else '' }}
+
+    <!-- ✈ 항공 정보 -->
     <div class="form-section">
-      <h5>👤 고객 정보</h5>
-      <input type="text" name="name" class="form-control mb-2" placeholder="이름 *" required>
-      <input type="tel" name="phone" class="form-control mb-2" placeholder="전화번호 (01012345678 형식)" required oninput="formatPhoneNumber(this)">
-      <input type="email" name="email" class="form-control" placeholder="이메일 (선택)">
+      <h5>✈ 항공 정보</h5>
+      <div class="checkbox-group">
+        <label><input type="radio" name="flight_status" value="추천" onclick="toggleFlightInputs()"> 예약 전 (가이드 4U 추천)</label>
+        <label><input type="radio" name="flight_status" value="직접 예약 예정" onclick="toggleFlightInputs()"> 예약 전 (직접 예약 예정)</label>
+        <label><input type="radio" name="flight_status" value="예약 완료" onclick="toggleFlightInputs()"> 예약 완료</label>
+      </div>
+      <input type="text" name="departure_flight" class="form-control mb-2 flight-input hidden" placeholder="출국 항공편명 (예: TG689)">
+      <input type="text" name="return_flight" class="form-control flight-input hidden" placeholder="귀국 항공편명 (예: TG688)">
     </div>
 
+    <!-- 🏨 리조트 정보 -->
     <div class="form-section">
-      <h5>📅 여행기간</h5>
-      <input type="text" name="travel_period" id="travel_period" class="form-control" placeholder="출발일 ~ 도착일" required>
+      <h5>🏨 리조트 정보</h5>
+      <div class="checkbox-group">
+        <label><input type="radio" name="resort_status" value="추천" onclick="updateResortPlaceholder()"> 예약 전 (가이드 4U 추천)</label>
+        <label><input type="radio" name="resort_status" value="직접 예약 예정" onclick="updateResortPlaceholder()"> 예약 전 (직접 예약 예정)</label>
+        <label><input type="radio" name="resort_status" value="예약 완료" onclick="updateResortPlaceholder()"> 예약 완료</label>
+      </div>
+      <input type="text" name="resort_name" id="resort_name" class="form-control" placeholder="예약을 원하시는 리조트가 있으시면 리조트 이름을 입력 해주세요!">
+    </div>
+
+    <!-- ✅ 약관 동의 -->
+    <div class="form-section terms-box">
+      <label><input type="checkbox" required> 전체 약관 동의</label>
+      <label><input type="checkbox" required> 개인정보 수집 및 이용 동의</label>
+      <label><input type="checkbox" required> 여행 계약 조건 동의</label>
+      <a href="#" onclick="openTerms()">📖 자세히 보기</a>
     </div>
 
     <button type="submit" class="submit-btn">✉ 견적 제출</button>
   </form>
 </div>
 
-<!-- Flatpickr -->
+<!-- 📖 약관 모달 -->
+<div id="termsPopup" class="terms-popup" style="display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%); background:white; border:1px solid #ccc; padding:20px; z-index:1000; max-width:500px;">
+  <div>
+    <span class="close-btn" onclick="closeTerms()" style="float:right; cursor:pointer; color:red; font-weight:bold;">✖ 닫기</span>
+    <h4>이용 약관 전체 보기</h4>
+    <p><strong>[1] 개인정보 수집 및 이용 안내</strong><br>고객님의 정보를 맞춤 여행 서비스 제공을 위해 수집하며, 외부에 공유되지 않습니다.</p>
+    <p><strong>[2] 여행 계약 조건</strong><br>여행 일정, 환불 조건, 예약 규정 등은 당사 약관에 따릅니다.</p>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
   flatpickr("#travel_period", {
@@ -89,5 +136,48 @@
       input.value = digits.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
     }
   }
+
+  function changeCount(type, amount) {
+    let input = document.getElementById(type);
+    let value = parseInt(input.value) + amount;
+    if (value >= 0) {
+      input.value = value;
+      updateTotal();
+    }
+  }
+
+  function updateTotal() {
+    let total = parseInt(document.getElementById('adult').value) +
+                parseInt(document.getElementById('child').value) +
+                parseInt(document.getElementById('infant').value);
+    document.getElementById('total_count').innerText = total;
+  }
+
+  function toggleFlightInputs() {
+    let selected = document.querySelector('input[name="flight_status"]:checked').value;
+    document.querySelectorAll('.flight-input').forEach(el => {
+      el.classList.toggle('hidden', selected !== '예약 완료');
+    });
+  }
+
+  function updateResortPlaceholder() {
+    let selected = document.querySelector('input[name="resort_status"]:checked').value;
+    let input = document.getElementById('resort_name');
+    if (selected === '예약 완료') {
+      input.placeholder = "예약하신 리조트 이름을 입력 해주세요!";
+    } else {
+      input.placeholder = "예약을 원하시는 리조트가 있으시면 리조트 이름을 입력 해주세요!";
+    }
+  }
+
+  function openTerms() {
+    document.getElementById("termsPopup").style.display = "block";
+  }
+
+  function closeTerms() {
+    document.getElementById("termsPopup").style.display = "none";
+  }
+
+  document.addEventListener("DOMContentLoaded", updateTotal);
 </script>
 {% endblock %}
