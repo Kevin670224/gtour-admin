@@ -1,0 +1,33 @@
+{% extends "admin/layout.html" %}
+{% block title %}견적서 작성{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">📝 견적서 작성</h2>
+
+  <form method="POST">
+    <div class="mb-3">
+      <label class="form-label">고객명</label>
+      <input type="text" class="form-control" value="{{ quote.customer_name }}" readonly>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">상품명</label>
+      <input type="text" name="product_name" class="form-control" value="{{ quote.product_name }}">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">예상 총 금액 (예: 1,200,000원)</label>
+      <input type="text" name="estimated_price" class="form-control">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">비고 / 특이사항</label>
+      <textarea name="memo" class="form-control" rows="4"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-success">💾 견적 저장</button>
+    <a href="{{ url_for('admin_quote.quote_detail', quote_id=quote.id) }}" class="btn btn-secondary">← 돌아가기</a>
+  </form>
+</div>
+{% endblock %}
