@@ -1,0 +1,37 @@
+{% extends "admin/layout.html" %}
+{% block title %}견적서 작성{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">📝 고객 요청 기반 견적서 작성</h2>
+
+  <form method="POST" action="{{ url_for('admin_quote.save_estimate', quote_id=quote.id) }}">
+    <div class="mb-3">
+      <label class="form-label">담당자 이름</label>
+      <input type="text" class="form-control" name="manager_name" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">여행 일정 요약</label>
+      <textarea class="form-control" name="itinerary_summary" rows="3" placeholder="예: 1일차 방콕 시티투어, 2일차 파타야 바닷가..."></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">포함 내역</label>
+      <textarea class="form-control" name="included_items" rows="3"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">불포함 내역</label>
+      <textarea class="form-control" name="excluded_items" rows="3"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">총 견적 금액 (₩)</label>
+      <input type="number" class="form-control" name="total_price" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">💾 견적서 저장</button>
+  </form>
+</div>
+{% endblock %}
