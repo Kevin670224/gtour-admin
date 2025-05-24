@@ -30,10 +30,6 @@
     text-align: center;
     border-radius: 10px 10px 0 0;
   }
-
-  .form-select.country-select { width: 25%; display: inline-block; }
-  .form-select.region-select { width: 25%; display: inline-block; margin-left: 10px; }
-  .form-select.product-select { width: 45%; display: inline-block; margin-left: 10px; }
 </style>
 
 <div class="container-fluid mt-5 mb-5">
@@ -44,7 +40,8 @@
     </div>
     <div class="card-body">
       <form id="quoteForm" method="POST" action="/quote/submit">
-        <!-- 🧍 고객정보 -->
+
+        <!-- 고객 정보 -->
         <h5 class="fw-bold mt-4">🧍 고객정보</h5>
         <div class="mb-3">
           <label class="form-label">고객명 *</label>
@@ -59,21 +56,21 @@
           <input type="email" class="form-control" name="email" placeholder="예: guide4u@email.com">
         </div>
 
-        <!-- 🌍 여행지 선택 -->
+        <!-- 여행지 선택 -->
         <h5 class="fw-bold mt-4">🌍 여행지 선택</h5>
         <div class="mb-3">
-          <select class="form-select country-select" id="country" name="country" required>
+          <select class="form-select" id="country" name="country" required>
             <option value="">국가</option>
             <option value="태국">태국</option>
             <option value="베트남">베트남</option>
           </select>
-          <select class="form-select region-select" id="region" name="region" onchange="updateProducts()" required>
+          <select class="form-select mt-2" id="region" name="region" onchange="updateProducts()" required>
             <option value="">지역</option>
             <option value="방콕">방콕</option>
             <option value="푸켓">푸켓</option>
             <option value="다낭">다낭</option>
           </select>
-          <select class="form-select product-select" id="product" name="product" onchange="fillProductName()">
+          <select class="form-select mt-2" id="product" name="product" onchange="fillProductName()">
             <option value="">상품선택 (원하시는 투어 상품을 선택해 주세요)</option>
           </select>
         </div>
@@ -83,13 +80,13 @@
         </div>
         <input type="hidden" class="form-control" id="product_name" name="product_name">
 
-        <!-- 🗓 여행기간 -->
+        <!-- 여행 기간 -->
         <h5 class="fw-bold mt-4">🗓 여행기간</h5>
         <div class="mb-3">
           <input type="text" class="form-control" id="travel_period" name="travel_period" placeholder="여행 출발일 ~ 도착일" required>
         </div>
 
-        <!-- 🛫 항공 정보 -->
+        <!-- 항공 정보 -->
         <h5 class="fw-bold mt-4">🛫 항공 정보</h5>
         <div class="mb-3">
           <div class="form-check">
@@ -107,25 +104,25 @@
           </div>
         </div>
 
-        <!-- ✈ 출발 공항 -->
+        <!-- 출발 공항 -->
         <h5 class="fw-bold mt-4">✈ 출발 공항</h5>
         <div class="mb-3">
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="departure_airport" value="인천공항" id="airport_incheon">
+            <input class="form-check-input" type="radio" name="departure_airport" value="인천공항" id="airport_incheon" onchange="toggleAirportOther()">
             <label class="form-check-label" for="airport_incheon">인천공항</label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="departure_airport" value="김해공항" id="airport_gimhae">
+            <input class="form-check-input" type="radio" name="departure_airport" value="김해공항" id="airport_gimhae" onchange="toggleAirportOther()">
             <label class="form-check-label" for="airport_gimhae">김해공항</label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="departure_airport" value="기타" id="airport_etc" onchange="toggleAirportOther()">
+            <input class="form-check-input" type="radio" name="departure_airport" value="기타" id="airport_etc" onchange="toggleAirportOther()">
             <label class="form-check-label" for="airport_etc">기타 - 직접 입력해 주세요! (예: 청주공항)</label>
             <input type="text" class="form-control mt-1" name="departure_airport_other" id="departure_airport_other" placeholder="예: 청주공항" style="display:none;">
           </div>
         </div>
 
-        <!-- 🏨 리조트 정보 -->
+        <!-- 리조트 정보 -->
         <h5 class="fw-bold mt-4">🏨 리조트 정보</h5>
         <div class="mb-3">
           <div class="form-check">
@@ -143,13 +140,13 @@
           </div>
         </div>
 
-        <!-- 📝 기타 요청사항 -->
+        <!-- 기타 요청사항 -->
         <h5 class="fw-bold mt-4">📝 기타 요청사항</h5>
         <div class="mb-3">
           <textarea class="form-control" name="notes" rows="3" placeholder="예: 마사지 업그레이드 포함, 유아 캐리어 포함 등"></textarea>
         </div>
 
-        <!-- ✅ 약관동의 -->
+        <!-- 약관 동의 -->
         <div class="border rounded p-3 mb-3">
           <div class="form-check mb-2">
             <input class="form-check-input" type="checkbox" id="agree_all">
@@ -262,6 +259,11 @@
     const checked = this.checked;
     document.getElementById('agree1').checked = checked;
     document.getElementById('agree2').checked = checked;
+  });
+
+  window.addEventListener('DOMContentLoaded', () => {
+    toggleAirportOther();
+    toggleResortName();
   });
 </script>
 {% endblock %}
