@@ -9,16 +9,33 @@
     <tr><th>고객명</th><td>{{ quote.customer_name }}</td></tr>
     <tr><th>연락처</th><td>{{ quote.phone }}</td></tr>
     <tr><th>이메일</th><td>{{ quote.email or '-' }}</td></tr>
-    <tr><th>여행지</th><td>{{ quote.destination }}</td></tr>
+
+    <!-- ✅ 여행지: country > region 로 표시 -->
+    <tr><th>여행지</th><td>{{ quote.country }} > {{ quote.region }}</td></tr>
+
     <tr><th>상품명</th><td>{{ quote.product_name or '-' }}</td></tr>
     <tr><th>여행기간</th><td>{{ quote.travel_period }}</td></tr>
+
     <tr>
       <th>인원</th>
       <td>성인: {{ quote.adult }}, 아동: {{ quote.child }}, 유아: {{ quote.infant }}</td>
     </tr>
+
     <tr><th>출발 공항</th><td>{{ quote.departure_airport or '-' }}</td></tr>
     <tr><th>항공 정보</th><td>{{ quote.flight_detail or '-' }}</td></tr>
-    <tr><th>리조트 상태</th><td>{{ quote.resort_status or '-' }}</td></tr>
+
+    <!-- ✅ 리조트 상태: '가이드 추천' → '가이드 4U 추천' 으로 표시 -->
+    <tr>
+      <th>리조트 상태</th>
+      <td>
+        {% if quote.resort_status == "가이드 추천" %}
+          가이드 4U 추천
+        {% else %}
+          {{ quote.resort_status or '-' }}
+        {% endif %}
+      </td>
+    </tr>
+
     <tr><th>리조트 이름</th><td>{{ quote.resort_name or '-' }}</td></tr>
     <tr><th>리조트 스타일</th><td>{{ quote.resort_style or '-' }}</td></tr>
     <tr><th>기타 요청사항</th><td>{{ quote.requirements or '-' }}</td></tr>
