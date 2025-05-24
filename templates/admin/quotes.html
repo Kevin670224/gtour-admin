@@ -55,9 +55,9 @@
     <tbody>
       {% for q in quotes %}
       <tr>
-        <!-- ✅ 상세보기 링크 추가 -->
+        <!-- ✅ 링크 변경: 견적서 작성 페이지로 바로 이동 -->
         <td>
-          <a href="{{ url_for('admin_quote.quote_detail', quote_id=q.id) }}">
+          <a href="{{ url_for('admin_quote.create_estimate', quote_id=q.id) }}">
             {{ q.quote_number }}
           </a>
         </td>
