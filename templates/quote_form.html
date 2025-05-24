@@ -121,45 +121,63 @@
           <input type="text" class="form-control" id="travel_period" name="travel_period" placeholder="여행 출발일 ~ 도착일" required>
         </div>
 
-       <!-- 항공 정보 -->
+      <!-- 항공 정보 -->
 <h5 class="fw-bold mt-4">🛫 항공 정보</h5>
 <div class="mb-3">
   <div class="form-check">
-    <input class="form-check-input" type="radio" name="flight_status" value="가이드 추천" id="flight1" onclick="toggleFlightFields()" checked>
+    <input class="form-check-input" type="radio" name="flight_status" id="flight1" value="예약 전 (가이드 4U 추천)" checked onclick="toggleFlightFields()">
     <label class="form-check-label" for="flight1">예약 전 (가이드 4U 추천)</label>
   </div>
   <div class="form-check">
-    <input class="form-check-input" type="radio" name="flight_status" value="직접 예약 예정" id="flight2" onclick="toggleFlightFields()">
+    <input class="form-check-input" type="radio" name="flight_status" id="flight2" value="예약 전 (직접 예약 예정)" onclick="toggleFlightFields()">
     <label class="form-check-label" for="flight2">예약 전 (직접 예약 예정)</label>
   </div>
   <div class="form-check">
-    <input class="form-check-input" type="radio" name="flight_status" value="예약 완료" id="flight3" onclick="toggleFlightFields()">
+    <input class="form-check-input" type="radio" name="flight_status" id="flight3" value="예약 완료" onclick="toggleFlightFields()">
     <label class="form-check-label" for="flight3">예약 완료</label>
   </div>
 
-  <!-- 출발공항 입력 -->
-  <input type="text" id="departure_input" name="departure_airport" class="form-control mt-2" placeholder="출발 공항을 입력해 주세요! (예: 청주)" style="display: none;">
+  <!-- ✅ 출발 공항 선택 박스 -->
+  <div id="departureAirportGroup" class="mt-2" style="display: none;">
+    <label class="form-label">출발 공항</label>
+    <div class="d-flex flex-wrap align-items-center gap-3">
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="departure_airport" id="airport_incheon" value="인천">
+        <label class="form-check-label" for="airport_incheon">인천</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="departure_airport" id="airport_gimhae" value="김해">
+        <label class="form-check-label" for="airport_gimhae">김해</label>
+      </div>
+      <div class="form-check d-flex align-items-center">
+        <input class="form-check-input me-1" type="radio" name="departure_airport" id="airport_other" value="기타">
+        <label class="form-check-label me-2" for="airport_other">기타</label>
+        <input type="text" class="form-control form-control-sm" name="departure_airport_custom" placeholder="예: 청주" style="width: 120px;">
+      </div>
+    </div>
+  </div>
 
-  <!-- 항공편명 입력 -->
-  <input type="text" id="flight_input" name="flight_detail" class="form-control mt-2" placeholder="항공편명을 입력해 주세요 (예: KE124 / KE123)" style="display: none;">
+  <!-- ✅ 항공편명 입력란 -->
+  <input type="text" id="flight_detail" name="flight_detail" class="form-control mt-2" placeholder="항공편명을 입력해 주세요 (예: KE124 / KE123)" style="display: none;">
 </div>
 
+<!-- 스크립트 -->
 <script>
   function toggleFlightFields() {
     const selected = document.querySelector('input[name="flight_status"]:checked').value;
-    const departureInput = document.getElementById('departure_input');
-    const flightInput = document.getElementById('flight_input');
+    const flightInput = document.getElementById('flight_detail');
+    const airportGroup = document.getElementById('departureAirportGroup');
 
     if (selected === "예약 완료") {
       flightInput.style.display = 'block';
-      departureInput.style.display = 'none';
+      airportGroup.style.display = 'none';
     } else {
       flightInput.style.display = 'none';
-      departureInput.style.display = 'block';
+      airportGroup.style.display = 'block';
     }
   }
 
-  document.addEventListener('DOMContentLoaded', toggleFlightFields);
+  document.addEventListener("DOMContentLoaded", toggleFlightFields);
 </script>
 
 
