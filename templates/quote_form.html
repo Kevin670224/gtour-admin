@@ -61,18 +61,18 @@
         </div>
 <!-- 총 인원 -->
 <h5 class="fw-bold mt-4">👥 총 인원</h5>
-<div class="row mb-3">
-  <div class="col-md-4">
+<div class="d-flex flex-wrap gap-4 align-items-end mb-3">
+  <div>
     <label class="form-label">성인 (만 12세 이상)</label>
-    <input type="number" class="form-control" name="adult" id="adult" min="0" value="0" style="max-width: 150px;" oninput="updateTotalPeople()">
+    <input type="number" class="form-control form-control-sm" name="adult" id="adult" min="0" value="0" style="width: 80px;" oninput="updateTotalPeople()">
   </div>
-  <div class="col-md-4">
+  <div>
     <label class="form-label">아동 (만 3세 ~ 만 12세)</label>
-    <input type="number" class="form-control" name="child" id="child" min="0" value="0" style="max-width: 150px;" oninput="updateTotalPeople()">
+    <input type="number" class="form-control form-control-sm" name="child" id="child" min="0" value="0" style="width: 80px;" oninput="updateTotalPeople()">
   </div>
-  <div class="col-md-4">
+  <div>
     <label class="form-label">유아 (24개월 미만)</label>
-    <input type="number" class="form-control" name="infant" id="infant" min="0" value="0" style="max-width: 150px;" oninput="updateTotalPeople()">
+    <input type="number" class="form-control form-control-sm" name="infant" id="infant" min="0" value="0" style="width: 80px;" oninput="updateTotalPeople()">
   </div>
 </div>
 
@@ -86,24 +86,11 @@
     const child = parseInt(document.getElementById("child").value) || 0;
     const infant = parseInt(document.getElementById("infant").value) || 0;
     const total = adult + child + infant;
-
     document.getElementById("totalPeopleDisplay").innerText = `총 인원: ${total} 명`;
   }
 
   document.addEventListener("DOMContentLoaded", updateTotalPeople);
 </script>
-;
-</script>
-
-<script>
-  function updateTotalCount() {
-    const adults = parseInt(document.querySelector('[name="adults"]').value || 0);
-    const children = parseInt(document.querySelector('[name="children"]').value || 0);
-    const infants = parseInt(document.querySelector('[name="infants"]').value || 0);
-    document.getElementById('totalCount').innerText = adults + children + infants;
-  }
-</script>
-S
         <!-- 여행지 선택 -->
         <h5 class="fw-bold mt-4">🌍 여행지 선택</h5>
         <div class="mb-3">
