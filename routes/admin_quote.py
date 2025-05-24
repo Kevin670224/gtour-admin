@@ -1,9 +1,10 @@
-from flask import Blueprint, render_template, request
-from models import Quote
+from flask import Blueprint, render_template, request, redirect, url_for, flash
+from models import Quote, db
 from datetime import datetime, timedelta
 
 admin_quote_bp = Blueprint("admin_quote", __name__, url_prefix="/admin")
 
+# ✅ 견적 목록
 @admin_quote_bp.route("/quotes")
 def admin_quotes():
     status = request.args.get("status", "")
@@ -53,3 +54,23 @@ def admin_quotes():
         quotes = trash_query.order_by(Quote.created_at.desc()).all()
 
     return render_template("admin/quotes.html", quotes=quotes)
+
+# ✅ 견적 상세 보기
+@admin_quote_bp.route("/quotes/<int:quote_id>")
+def quote_detail(quote_id):
+    quote = Quote.query.get_or_404(quote_id)
+    return render_template("admin/quote_detail.html", quote=quote)
+
+# ✅ 견적서 작성 폼
+@admin_quote_bp.route("/quotes/<int:quote_id>/write", methods=["GET", "POST"])
+def create_estimate(quote_id):
+    quote = Quote.query.get_or_404(quote_id)
+
+    if request.method == "POST":
+        # 견적 상태를 "견적작성중" 또는 "발송완료"로 변경
+        quote.status = "견적작성중"
+        db.session.commit()
+        flash("견적서가 저장되었습니다.", "success")
+        return redirect(url_for("admin_quote.quote_detail", quote_id=quote.id))
+
+    return render_template("admin/quote_write.html", quote=quote)
