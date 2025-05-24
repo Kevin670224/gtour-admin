@@ -18,6 +18,10 @@ def create_app():
     # ✅ DB 초기화
     db.init_app(app)
 
+    # ✅ 🔽 Render 서버에서도 자동 DB 생성을 위한 코드 추가
+    with app.app_context():
+        db.create_all()
+
     # ✅ 블루프린트 등록
     from routes.admin_reservation import admin_reservation_bp
     from routes.admin_dashboard import admin_dashboard_bp
