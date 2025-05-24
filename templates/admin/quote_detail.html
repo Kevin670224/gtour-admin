@@ -1,0 +1,31 @@
+{% extends "admin/layout.html" %}
+{% block title %}견적 상세보기{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">💬 고객 견적 요청 상세</h2>
+
+  <table class="table table-bordered">
+    <tr><th>고객명</th><td>{{ quote.customer_name }}</td></tr>
+    <tr><th>연락처</th><td>{{ quote.phone }}</td></tr>
+    <tr><th>이메일</th><td>{{ quote.email or '-' }}</td></tr>
+    <tr><th>여행지</th><td>{{ quote.destination }}</td></tr>
+    <tr><th>상품명</th><td>{{ quote.product_name or '-' }}</td></tr>
+    <tr><th>여행기간</th><td>{{ quote.travel_period }}</td></tr>
+    <tr>
+      <th>인원</th>
+      <td>성인: {{ quote.adult }}, 아동: {{ quote.child }}, 유아: {{ quote.infant }}</td>
+    </tr>
+    <tr><th>출발 공항</th><td>{{ quote.departure_airport or '-' }}</td></tr>
+    <tr><th>항공 정보</th><td>{{ quote.flight_detail or '-' }}</td></tr>
+    <tr><th>리조트 상태</th><td>{{ quote.resort_status or '-' }}</td></tr>
+    <tr><th>리조트 이름</th><td>{{ quote.resort_name or '-' }}</td></tr>
+    <tr><th>리조트 스타일</th><td>{{ quote.resort_style or '-' }}</td></tr>
+    <tr><th>기타 요청사항</th><td>{{ quote.requirements or '-' }}</td></tr>
+    <tr><th>등록일</th><td>{{ quote.created_at.strftime('%Y-%m-%d %H:%M') }}</td></tr>
+    <tr><th>상태</th><td>{{ quote.status }}</td></tr>
+  </table>
+
+  <a href="{{ url_for('admin_quote.create_estimate', quote_id=quote.id) }}" class="btn btn-primary mt-3">📝 견적서 작성하기</a>
+</div>
+{% endblock %}
