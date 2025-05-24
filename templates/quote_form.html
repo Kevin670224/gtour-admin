@@ -2,179 +2,226 @@
 {% block title %}맞춤 견적 요청{% endblock %}
 
 {% block content %}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+<style>
+  @font-face {
+    font-family: 'HumanRounded';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2107@1.0/HumanRounded.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+  }
 
-<div class="container mt-5">
-  <h2 class="text-white bg-primary text-center p-3 rounded">📝 맞춤 견적 요청</h2>
-  <p class="text-center mt-2">가이드 4U 에서 제공 하는 모든 투어 상품은 단독 차량 + 단독 가이드를 이용한 단독 투어 입니다!</p>
+  .quote-title {
+    font-family: 'HumanRounded', 'Malgun Gothic', sans-serif;
+    font-size: 40px;
+    font-weight: 900;
+    color: white;
+  }
 
-  <form method="POST" action="/quote">
-    <!-- 고객 정보 -->
-    <div class="mt-4">
-      <label for="name">이름 *</label>
-      <input type="text" name="name" class="form-control" required>
-    </div>
-    <div class="mt-3">
-      <label for="phone">전화번호 *</label>
-      <input type="text" name="phone" class="form-control" oninput="formatPhone(this)" required>
-    </div>
-    <div class="mt-3">
-      <label for="email">이메일</label>
-      <input type="email" name="email" class="form-control">
-    </div>
+  .quote-subtitle {
+    color: white;
+    font-weight: bold;
+    margin-top: 10px;
+  }
 
-    <!-- 총 인원 -->
-    <div class="mt-4">
-      <h5>👥 총 인원</h5>
-      <div class="d-flex align-items-center">
-        <label class="me-2">성인:</label>
-        <input type="number" name="adult" class="form-control me-3" style="width: 80px;">
-        <label class="me-2">아동:</label>
-        <input type="number" name="child" class="form-control me-3" style="width: 80px;">
-        <label class="me-2">유아:</label>
-        <input type="number" name="infant" class="form-control" style="width: 80px;">
-      </div>
-      <small class="text-muted">※ 성인: 만 12세 이상 / 아동: 만 3세 ~ 12세 미만 / 유아: 24개월 미만</small>
-    </div>
+  .card-header-custom {
+    background-color: #007bff;
+    padding: 30px 20px;
+    text-align: center;
+    border-radius: 10px 10px 0 0;
+  }
 
-    <!-- 여행지 정보 -->
-    <div class="mt-4">
-      <h5>🌍 여행지 정보</h5>
-      <select id="country" name="country" class="form-control" onchange="updateRegion()">
-        <option value="">국가 선택</option>
-        <option value="태국">태국</option>
-        <option value="베트남">베트남</option>
-      </select>
-      <select id="region" name="region" class="form-control mt-2" onchange="updateProducts()">
-        <option>지역 선택</option>
-      </select>
-      <select id="product" name="product" class="form-control mt-2" onchange="fillProductName()">
-        <option>상품 선택</option>
-      </select>
-      <input type="text" id="product_name" name="product_name" class="form-control mt-2" placeholder="원하시는 투어 형태를 자유롭게 입력해 주세요!">
-    </div>
+  .form-select.country-select { width: 25%; display: inline-block; }
+  .form-select.region-select { width: 25%; display: inline-block; margin-left: 10px; }
+  .form-select.product-select { width: 45%; display: inline-block; margin-left: 10px; }
+</style>
 
-    <!-- 여행기간 -->
-    <div class="mt-4">
-      <h5>📅 여행기간</h5>
-      <input type="text" id="travel_period" name="travel_period" class="form-control" placeholder="출발일 ~ 도착일">
+<div class="container-fluid mt-5 mb-5">
+  <div class="card shadow-sm px-3">
+    <div class="card-header-custom">
+      <h1 class="quote-title">✈ 맞춤 견적 요청</h1>
+      <p class="quote-subtitle">📌 가이드 4U의 모든 상품은 단독 차량 + 단독 가이드로 진행되는 단독투어 상품입니다!</p>
     </div>
-
-    <!-- 항공 정보 -->
-    <div class="mt-4">
-      <h5>✈ 항공 정보</h5>
-      <div>
-        <label><input type="radio" name="flight_status" value="추천" onclick="toggleFlightInputs()"> 예약 전 (가이드 4U 추천)</label>
-        <label><input type="radio" name="flight_status" value="직접 예약 예정" onclick="toggleFlightInputs()"> 예약 전 (직접 예약 예정)</label>
-        <label><input type="radio" name="flight_status" value="예약 완료" onclick="toggleFlightInputs()"> 예약 완료</label>
-      </div>
-      <input type="text" name="departure_flight" class="form-control mt-2 flight-input" placeholder="출국 항공편명 (예: TG689)">
-      <input type="text" name="return_flight" class="form-control mt-2 flight-input" placeholder="귀국 항공편명 (예: TG688)">
-    </div>
-
-    <!-- 리조트 정보 -->
-    <div class="mt-4">
-      <h5>🏨 리조트 정보</h5>
-      <label><input type="radio" name="resort_status" value="추천" onclick="updateResortPlaceholder()"> 예약 전 (가이드 4U 추천)</label>
-      <label><input type="radio" name="resort_status" value="직접 예약 예정" onclick="updateResortPlaceholder()"> 예약 전 (직접 예약 예정)</label>
-      <label><input type="radio" name="resort_status" value="예약 완료" onclick="updateResortPlaceholder()"> 예약 완료</label>
-      <input type="text" name="resort_name" id="resort_name" class="form-control mt-2" placeholder="리조트 이름을 입력해 주세요">
-      <div class="mt-2">
-        <label><input type="checkbox" name="style" value="4성급"> 4성급</label>
-        <label><input type="checkbox" name="style" value="5성급"> 5성급</label>
-        <label><input type="checkbox" name="style" value="풀빌라"> 풀빌라</label>
-      </div>
-    </div>
-
-    <!-- 약관 동의 -->
-    <div class="border rounded p-3 mt-4">
-      <div class="form-check mb-2">
-        <input class="form-check-input" type="checkbox" id="agree_all">
-        <label class="form-check-label fw-bold" for="agree_all">전체약관동의</label>
-      </div>
-      <div class="ps-3">
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="agree" id="agree1" required>
-          <label class="form-check-label" for="agree1">[필수] 개인정보 수집 및 이용 동의 <a href="#" onclick="openTerms()">자세히 보기 ></a></label>
+    <div class="card-body">
+      <form id="quoteForm" method="POST" action="/quote/submit">
+        
+        <!-- 고객정보 -->
+        <h5 class="fw-bold mt-4">🧍 고객정보</h5>
+        <div class="mb-3">
+          <label class="form-label">고객명 *</label>
+          <input type="text" class="form-control" name="customer_name" required>
         </div>
-        <div class="form-check mt-2">
-          <input class="form-check-input" type="checkbox" name="agree2" id="agree2" required>
-          <label class="form-check-label" for="agree2">[필수] 개인정보 제3자 제공 동의 <a href="#" onclick="openTerms()">자세히 보기 ></a></label>
+        <div class="mb-3">
+          <label class="form-label">연락처 *</label>
+          <input type="text" class="form-control" name="phone" placeholder="010-1234-5678" required oninput="formatPhone(this)">
         </div>
-      </div>
-    </div>
+        <div class="mb-3">
+          <label class="form-label">이메일</label>
+          <input type="email" class="form-control" name="email" placeholder="예: guide4u@email.com">
+        </div>
 
-    <!-- 제출 버튼 -->
-    <div class="text-center mt-4">
-      <button type="submit" class="btn btn-primary px-4 py-2 fw-bold">✉ 견적 제출</button>
-    </div>
+        <!-- 여행지 선택 -->
+        <h5 class="fw-bold mt-4">🌍 여행지 선택</h5>
+        <div class="mb-3">
+          <select class="form-select country-select" id="country" name="country" required>
+            <option value="">국가</option>
+            <option value="태국">태국</option>
+            <option value="베트남">베트남</option>
+          </select>
+          <select class="form-select region-select" id="region" name="region" onchange="updateProducts()" required>
+            <option value="">지역</option>
+            <option value="방콕">방콕</option>
+            <option value="푸켓">푸켓</option>
+            <option value="다낭">다낭</option>
+          </select>
+          <select class="form-select product-select" id="product" name="product" onchange="fillProductName()">
+            <option value="">상품선택 (원하시는 투어 상품을 선택해 주세요)</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">원하시는 투어가 없을 시 자유롭게 적어 주세요</label>
+          <textarea class="form-control" name="custom_destination" rows="3"></textarea>
+        </div>
+        <input type="hidden" class="form-control" id="product_name" name="product_name">
 
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <div class="alert alert-success mt-3 text-center">{{ messages[0] }}</div>
-      {% endif %}
-    {% endwith %}
-  </form>
+        <!-- 여행기간 -->
+        <h5 class="fw-bold mt-4">🗓 여행기간</h5>
+        <div class="mb-3">
+          <input type="text" class="form-control" id="travel_period" name="travel_period" placeholder="여행 출발일 ~ 도착일" required>
+        </div>
+
+        <!-- 항공 정보 -->
+        <h5 class="fw-bold mt-4">🛫 항공 정보</h5>
+        <div class="mb-3">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="flight_status" value="가이드 추천" checked>
+            <label class="form-check-label">예약 전 (가이드 4U 추천)</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="flight_status" value="직접 예약 예정">
+            <label class="form-check-label">예약 전 (직접 예약 예정)</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="flight_status" value="예약 완료">
+            <label class="form-check-label">예약 완료</label>
+            <input type="text" class="form-control mt-1" name="flight_detail" placeholder="항공편명을 입력해 주세요 (예: KE124 / KE123)">
+          </div>
+        </div>
+
+        <!-- 리조트 정보 -->
+        <h5 class="fw-bold mt-4">🏨 리조트 정보</h5>
+        <div class="mb-3">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="resort_status" value="가이드 추천">
+            <label class="form-check-label">예약 전 (가이드 4U 추천)</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="resort_status" value="직접 예약">
+            <label class="form-check-label">예약 전 (직접 예약 예정)</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="resort_status" value="예약 완료">
+            <label class="form-check-label">예약 완료</label>
+            <input type="text" class="form-control mt-1" name="resort_name" placeholder="리조트 이름을 입력해 주세요 (예: 센타라 리조트)">
+          </div>
+        </div>
+        <div class="mb-3">
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" name="resort_style" value="5성급">
+            <label class="form-check-label">5성급</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" name="resort_style" value="4성급">
+            <label class="form-check-label">4성급</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" name="resort_style" value="풀빌라">
+            <label class="form-check-label">풀빌라</label>
+          </div>
+        </div>
+
+        <!-- 기타 요청사항 -->
+        <h5 class="fw-bold mt-4">📝 기타 요청사항</h5>
+        <div class="mb-3">
+          <textarea class="form-control" name="notes" rows="3" placeholder="예: 마사지 업그레이드 포함, 유아 캐리어 포함 등"></textarea>
+        </div>
+
+        <!-- 약관동의 -->
+        <div class="border rounded p-3 mb-3">
+          <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" id="agree_all">
+            <label class="form-check-label fw-bold" for="agree_all">전체약관동의</label>
+          </div>
+          <div class="ps-3">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="agree" id="agree1" required>
+              <label class="form-check-label" for="agree1">[필수] 개인정보 수집 및 이용(견적)</label>
+              <span class="float-end"><a href="#">자세히보기 &gt;</a></span>
+            </div>
+            <div class="form-check mt-2">
+              <input class="form-check-input" type="checkbox" name="agree2" id="agree2" required>
+              <label class="form-check-label" for="agree2">[필수] 개인정보 제3자 제공(견적)</label>
+              <span class="float-end"><a href="#">자세히보기 &gt;</a></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 제출 버튼 -->
+        <div class="text-center">
+          <button type="submit" class="btn btn-success px-4 py-2 fw-bold" style="font-size: 18px;">
+            ✉ 견적 제출
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
 <script>
-function updateRegion() {
-  const country = document.getElementById('country').value;
-  const region = document.getElementById('region');
-  region.innerHTML = '<option value="">지역 선택</option>';
-  if (country === '태국') {
-    ['푸켓', '방콕', '파타야'].forEach(r => region.innerHTML += `<option value="${r}">${r}</option>`);
-  } else if (country === '베트남') {
-    ['다낭', '나트랑', '푸꾸옥'].forEach(r => region.innerHTML += `<option value="${r}">${r}</option>`);
-  }
-}
-function updateProducts() {
-  const region = document.getElementById('region').value;
-  const product = document.getElementById('product');
-  const options = {
-    '푸켓': ['푸켓 자유여행 4박6일', '푸켓 허니문 5성급', '푸켓 가족 풀빌라'],
-    '다낭': ['다낭 3박5일 패키지', '다낭 골프투어', '다낭 자유여행 추천'],
-    '방콕': ['방콕 + 파타야 패키지', '방콕 쇼핑 & 마사지', '방콕 가족 자유여행']
-  };
-  product.innerHTML = '<option value="">상품 선택</option>';
-  if (options[region]) {
-    options[region].forEach(item => product.innerHTML += `<option value="${item}">${item}</option>`);
-  }
-}
-function fillProductName() {
-  document.getElementById('product_name').value = document.getElementById('product').value;
-}
-function formatPhone(input) {
-  let value = input.value.replace(/[^0-9]/g, '');
-  if (value.length >= 10) {
-    input.value = value.replace(/(\d{3})(\d{3,4})(\d{4})/, '$1-$2-$3');
-  }
-}
-function toggleFlightInputs() {
-  let selected = document.querySelector('input[name="flight_status"]:checked').value;
-  document.querySelectorAll('.flight-input').forEach(el => {
-    el.style.display = (selected === '예약 완료') ? 'block' : 'none';
+  flatpickr("#travel_period", {
+    mode: "range",
+    dateFormat: "Y-m-d",
+    locale: "ko",
+    showMonths: 2
   });
-}
-function updateResortPlaceholder() {
-  let selected = document.querySelector('input[name="resort_status"]:checked').value;
-  let input = document.getElementById('resort_name');
-  input.placeholder = selected === '예약 완료'
-    ? '예약하신 리조트 이름을 입력 해주세요!'
-    : '예약을 원하시는 리조트가 있으시면 리조트 이름을 입력 해주세요!';
-}
-function openTerms() {
-  alert('약관 내용을 여기에 표시하거나 모달창으로 보여줄 수 있습니다.');
-}
-document.getElementById('agree_all').addEventListener('change', function () {
-  const checked = this.checked;
-  document.getElementById('agree1').checked = checked;
-  document.getElementById('agree2').checked = checked;
-});
-window.addEventListener('DOMContentLoaded', () => {
-  toggleFlightInputs();
-});
+
+  function updateProducts() {
+    const region = document.getElementById('region').value;
+    const product = document.getElementById('product');
+    const options = {
+      '푸켓': ['푸켓 자유여행 4박6일', '푸켓 허니문 5성급', '푸켓 가족 풀빌라'],
+      '다낭': ['다낭 3박5일 패키지', '다낭 골프투어', '다낭 자유여행 추천'],
+      '방콕': ['방콕 + 파타야 패키지', '방콕 쇼핑 & 마사지', '방콕 가족 자유여행']
+    };
+    product.innerHTML = '<option value="">상품선택 (원하시는 투어 상품을 선택해 주세요)</option>';
+    if (options[region]) {
+      options[region].forEach(function(item) {
+        const opt = document.createElement('option');
+        opt.value = item;
+        opt.text = item;
+        product.appendChild(opt);
+      });
+    }
+  }
+
+  function fillProductName() {
+    const selected = document.getElementById('product').value;
+    document.getElementById('product_name').value = selected;
+  }
+
+  function formatPhone(input) {
+    let value = input.value.replace(/[^0-9]/g, '');
+    if (value.length >= 10) {
+      input.value = value.replace(/(\d{3})(\d{3,4})(\d{4})/, '$1-$2-$3');
+    }
+  }
+
+  document.getElementById('agree_all').addEventListener('change', function () {
+    const checked = this.checked;
+    document.getElementById('agree1').checked = checked;
+    document.getElementById('agree2').checked = checked;
+  });
 </script>
 {% endblock %}
