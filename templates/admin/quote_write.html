@@ -3,19 +3,88 @@
 
 {% block content %}
 <div class="container mt-4">
-  <h2 class="mb-4">📝 견적서 작성</h2>
+  <h2 class="mb-4">📝 고객 맞춤 견적 요청</h2>
+
+  <!-- 고객 정보 -->
+  <div class="mb-3">
+    <label class="form-label fw-bold">고객명</label>
+    <input type="text" class="form-control" value="{{ quote.customer_name }}" readonly>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label fw-bold">연락처</label>
+    <input type="text" class="form-control" value="{{ quote.phone }}" readonly>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label fw-bold">이메일</label>
+    <input type="text" class="form-control" value="{{ quote.email or '-' }}" readonly>
+  </div>
+
+  <!-- ✅ 총 인원 (고객정보 하단에 위치) -->
+  <div class="mb-3">
+    <label class="form-label fw-bold">총 인원</label>
+    <div class="form-control" readonly>
+      성인 (만 13세 이상): {{ quote.adult }}명 /
+      아동 (만 3세 ~ 12세): {{ quote.child }}명 /
+      유아 (24개월 미만): {{ quote.infant }}명
+    </div>
+  </div>
+
+  <!-- 여행지 -->
+  <div class="mb-3">
+    <label class="form-label fw-bold">여행지</label>
+    <input type="text" class="form-control" value="{{ quote.country }} > {{ quote.region }}" readonly>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label fw-bold">상품명</label>
+    <input type="text" class="form-control" value="{{ quote.product_name or '-' }}" readonly>
+  </div>
+
+  <!-- 여행기간 -->
+  <div class="mb-3">
+    <label class="form-label fw-bold">여행기간</label>
+    <input type="text" class="form-control" value="{{ quote.travel_period }}" readonly>
+  </div>
+
+  <!-- 항공 정보 -->
+  <div class="mb-3">
+    <label class="form-label fw-bold">출발 공항</label>
+    <input type="text" class="form-control" value="{{ quote.departure_airport or '-' }}" readonly>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label fw-bold">항공 정보</label>
+    <input type="text" class="form-control" value="{{ quote.flight_detail or '-' }}" readonly>
+  </div>
+
+  <!-- 리조트 정보 -->
+  <div class="mb-3">
+    <label class="form-label fw-bold">리조트 상태</label>
+    <input type="text" class="form-control" value="{% if quote.resort_status == '가이드 추천' %}가이드 4U 추천{% else %}{{ quote.resort_status or '-' }}{% endif %}" readonly>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label fw-bold">리조트 이름</label>
+    <input type="text" class="form-control" value="{{ quote.resort_name or '-' }}" readonly>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label fw-bold">리조트 스타일</label>
+    <input type="text" class="form-control" value="{{ quote.resort_style or '-' }}" readonly>
+  </div>
+
+  <!-- 기타 요청사항 -->
+  <div class="mb-3">
+    <label class="form-label fw-bold">기타 요청사항</label>
+    <textarea class="form-control" rows="3" readonly>{{ quote.requirements or '-' }}</textarea>
+  </div>
+
+  <!-- 📌 관리자 견적 입력 영역 -->
+  <h4 class="mt-5 mb-3">📌 견적 입력</h4>
 
   <form method="POST">
-    <div class="mb-3">
-      <label class="form-label">고객명</label>
-      <input type="text" class="form-control" value="{{ quote.customer_name }}" readonly>
-    </div>
-
-    <div class="mb-3">
-      <label class="form-label">상품명</label>
-      <input type="text" name="product_name" class="form-control" value="{{ quote.product_name }}">
-    </div>
-
     <div class="mb-3">
       <label class="form-label">예상 총 금액 (예: 1,200,000원)</label>
       <input type="text" name="estimated_price" class="form-control">
@@ -27,7 +96,7 @@
     </div>
 
     <button type="submit" class="btn btn-success">💾 견적 저장</button>
-    <a href="{{ url_for('admin_quote.quote_detail', quote_id=quote.id) }}" class="btn btn-secondary">← 돌아가기</a>
+    <a href="{{ url_for('admin_quotes') }}" class="btn btn-secondary">← 돌아가기</a>
   </form>
 </div>
 {% endblock %}
