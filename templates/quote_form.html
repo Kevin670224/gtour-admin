@@ -39,12 +39,38 @@
 <div class="container-fluid mt-5 mb-5">
   <div class="card shadow-sm px-3">
     <div class="card-header-custom">
-      <h1 class="quote-title">✈ 맞축 결적 요청</h1>
-      <p class="quote-subtitle">📌 가이드 4U의 모든 상품은 단독 차반 + 단독 가이드로 진행되는 단독투어 상품입니다!</p>
+      <h1 class="quote-title">✈ 맞춤 견적 요청</h1>
+      <p class="quote-subtitle">📌 가이드 4U의 모든 상품은 단독 차량 + 단독 가이드로 진행되는 단독투어 상품입니다!</p>
     </div>
     <div class="card-body">
       <form id="quoteForm" method="POST" action="/quote/submit">
-        <!-- 조각을 재설정한 JS 확인 및 복사용 작업 수행 -->
+        <!-- 여기에 견적 요청 관련 입력 항목들이 위치합니다 -->
+        <div class="mb-3">
+          <label class="form-label">출발 공항을 선택해 주세요! *</label>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="departure_airport" value="인천공항" id="airport_incheon">
+            <label class="form-check-label" for="airport_incheon">인천공항</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="departure_airport" value="김해공항" id="airport_gimhae">
+            <label class="form-check-label" for="airport_gimhae">김해공항</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="departure_airport" value="기타" id="airport_etc" onchange="toggleAirportOther()">
+            <label class="form-check-label" for="airport_etc">기타 - 직접 입력해 주세요! (예: 청주공항)</label>
+            <input type="text" class="form-control mt-1" name="departure_airport_other" id="departure_airport_other" placeholder="예: 청주공항" style="display:none;">
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">리조트 상태</label><br>
+          <input type="radio" name="resort_status" value="가이드 추천" onclick="toggleResortName()"> 예약 전 (가이드 4U 추천)<br>
+          <input type="radio" name="resort_status" value="직접 예약" onclick="toggleResortName()"> 예약 전 (직접 예약 예정)<br>
+          <input type="radio" name="resort_status" value="예약 완료" onclick="toggleResortName()"> 예약 완료
+          <input type="text" class="form-control mt-1" name="resort_name" id="resort_name_input" placeholder="리조트 이름을 입력해 주세요 (예: 센타라 리조트)" style="display:none;">
+        </div>
+
+        <button type="submit" class="btn btn-primary">제출</button>
       </form>
     </div>
   </div>
@@ -68,15 +94,16 @@
   }
 
   function toggleResortName() {
-    const resortRadios = document.getElementsByName('resort_status');
+    const radios = document.getElementsByName('resort_status');
     const input = document.getElementById('resort_name_input');
-    let showInput = false;
-    resortRadios.forEach(radio => {
-      if (radio.checked && radio.value === '예약 완료') {
-        showInput = true;
+    let visible = false;
+    for (let i = 0; i < radios.length; i++) {
+      if (radios[i].checked && radios[i].value === '예약 완료') {
+        visible = true;
+        break;
       }
-    });
-    input.style.display = showInput ? 'block' : 'none';
+    }
+    input.style.display = visible ? 'block' : 'none';
   }
 
   window.addEventListener('DOMContentLoaded', function () {
