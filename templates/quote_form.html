@@ -204,7 +204,7 @@ S
   <textarea class="form-control" name="notes" rows="3" placeholder="예: 마사지 업그레이드 포함, 유아 캐리어 포함 등"></textarea>
 </div>
 
-<!-- 약관동의 -->
+<!-- 약관동의 (기존 것 전부 교체!) -->
 <div class="border rounded p-3 mb-3">
   <div class="form-check mb-2">
     <input class="form-check-input" type="checkbox" id="agree_all">
@@ -214,12 +214,16 @@ S
     <div class="form-check">
       <input class="form-check-input" type="checkbox" name="agree" id="agree1" required>
       <label class="form-check-label" for="agree1">[필수] 개인정보 수집 및 이용(견적)</label>
-      <span class="float-end"><a href="#">자세히보기 &gt;</a></span>
+      <span class="float-end">
+        <a href="#" data-bs-toggle="modal" data-bs-target="#policyModal1">자세히보기 &gt;</a>
+      </span>
     </div>
     <div class="form-check mt-2">
       <input class="form-check-input" type="checkbox" name="agree2" id="agree2" required>
       <label class="form-check-label" for="agree2">[필수] 개인정보 제3자 제공(견적)</label>
-      <span class="float-end"><a href="#">자세히보기 &gt;</a></span>
+      <span class="float-end">
+        <a href="#" data-bs-toggle="modal" data-bs-target="#policyModal2">자세히보기 &gt;</a>
+      </span>
     </div>
   </div>
 </div>
@@ -235,6 +239,44 @@ S
 </div>
 </div>
 </div>
+<!-- 개인정보 수집 이용 약관 모달 -->
+<div class="modal fade" id="policyModal1" tabindex="-1" aria-labelledby="policyModal1Label" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="policyModal1Label">[필수] 개인정보 수집 및 이용 약관</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+      </div>
+      <div class="modal-body">
+        여기에 개인정보 수집 및 이용 약관 내용을 입력하세요.<br>
+        예: 수집 항목, 보관 기간, 수집 목적 등
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 개인정보 제3자 제공 약관 모달 -->
+<div class="modal fade" id="policyModal2" tabindex="-1" aria-labelledby="policyModal2Label" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="policyModal2Label">[필수] 개인정보 제3자 제공 약관</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+      </div>
+      <div class="modal-body">
+        여기에 개인정보 제3자 제공에 대한 약관 내용을 입력하세요.<br>
+        예: 제공받는 자, 제공 항목, 제공 목적 등
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- 스크립트: 플랫픽커 및 기능 전체 -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
