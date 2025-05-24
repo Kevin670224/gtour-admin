@@ -59,7 +59,37 @@
           <label class="form-label">이메일</label>
           <input type="email" class="form-control" name="email" placeholder="예: guide4u@email.com">
         </div>
+<!-- 총 인원 (성인/아동/유아 한 줄 정렬 + 자동 총합 표시) -->
+<div class="mb-3">
+  <label class="form-label fw-bold">👥 총 인원</label>
+  <div class="row">
+    <div class="col-md-4">
+      <label class="form-label">성인 (만 12세 이상)</label>
+      <input type="number" class="form-control" name="adults" value="0" min="0" oninput="updateTotalCount()">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">아동 (만 3세 ~ 만 12세)</label>
+      <input type="number" class="form-control" name="children" value="0" min="0" oninput="updateTotalCount()">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">유아 (24개월 미만)</label>
+      <input type="number" class="form-control" name="infants" value="0" min="0" oninput="updateTotalCount()">
+    </div>
+  </div>
+  <div class="mt-2">
+    <strong>총 인원:</strong> <span id="totalCount">0</span> 명
+  </div>
+</div>
 
+<script>
+  function updateTotalCount() {
+    const adults = parseInt(document.querySelector('[name="adults"]').value || 0);
+    const children = parseInt(document.querySelector('[name="children"]').value || 0);
+    const infants = parseInt(document.querySelector('[name="infants"]').value || 0);
+    document.getElementById('totalCount').innerText = adults + children + infants;
+  }
+</script>
+S
         <!-- 여행지 선택 -->
         <h5 class="fw-bold mt-4">🌍 여행지 선택</h5>
         <div class="mb-3">
