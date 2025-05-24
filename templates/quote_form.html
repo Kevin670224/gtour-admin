@@ -60,26 +60,39 @@
           <input type="email" class="form-control" name="email" placeholder="예: guide4u@email.com">
         </div>
 <!-- 총 인원 (성인/아동/유아 한 줄 정렬 + 자동 총합 표시) -->
-<div class="mb-3">
-  <label class="form-label fw-bold">👥 총 인원</label>
-  <div class="row">
-    <div class="col-md-4">
-      <label class="form-label">성인 (만 12세 이상)</label>
-      <input type="number" class="form-control" name="adults" value="0" min="0" oninput="updateTotalCount()">
-    </div>
-    <div class="col-md-4">
-      <label class="form-label">아동 (만 3세 ~ 만 12세)</label>
-      <input type="number" class="form-control" name="children" value="0" min="0" oninput="updateTotalCount()">
-    </div>
-    <div class="col-md-4">
-      <label class="form-label">유아 (24개월 미만)</label>
-      <input type="number" class="form-control" name="infants" value="0" min="0" oninput="updateTotalCount()">
-    </div>
+<h5 class="fw-bold mt-4">👥 총 인원</h5>
+<div class="row mb-3">
+  <div class="col-md-4">
+    <label class="form-label">성인 (만 12세 이상)</label>
+    <input type="number" class="form-control" id="adult" name="adult" min="0" value="0" style="max-width: 150px;" oninput="updateTotalPeople()">
   </div>
-  <div class="mt-2">
-    <strong>총 인원:</strong> <span id="totalCount">0</span> 명
+  <div class="col-md-4">
+    <label class="form-label">아동 (만 3세 ~ 만 12세)</label>
+    <input type="number" class="form-control" id="child" name="child" min="0" value="0" style="max-width: 150px;" oninput="updateTotalPeople()">
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">유아 (24개월 미만)</label>
+    <input type="number" class="form-control" id="infant" name="infant" min="0" value="0" style="max-width: 150px;" oninput="updateTotalPeople()">
   </div>
 </div>
+
+<!-- 총 인원 표시 -->
+<p id="totalPeopleDisplay" class="fw-bold">총 인원: 0 명</p>
+
+<!-- 총 인원 계산 스크립트 -->
+<script>
+  function updateTotalPeople() {
+    const adult = parseInt(document.getElementById("adult").value) || 0;
+    const child = parseInt(document.getElementById("child").value) || 0;
+    const infant = parseInt(document.getElementById("infant").value) || 0;
+    const total = adult + child + infant;
+
+    document.getElementById("totalPeopleDisplay").innerText = `총 인원: ${total} 명`;
+  }
+
+  // 페이지 로드시 총합 자동 표시
+  document.addEventListener("DOMContentLoaded", updateTotalPeople);
+</script>
 
 <script>
   function updateTotalCount() {
