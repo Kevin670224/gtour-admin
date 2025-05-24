@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %}맞춤 견적 요청{% endblock %}
+{% block title %}· 맞충 가격 검색{% endblock %}
 
 {% block content %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
@@ -35,131 +35,112 @@
 <div class="container-fluid mt-5 mb-5">
   <div class="card shadow-sm px-3">
     <div class="card-header-custom">
-      <h1 class="quote-title">✈ 맞춤 견적 요청</h1>
-      <p class="quote-subtitle">📌 가이드 4U의 모든 상품은 단독 차량 + 단독 가이드로 진행되는 단독투어 상품입니다!</p>
+      <h1 class="quote-title">✈ 맞충 검색</h1>
+      <p class="quote-subtitle">📌 가이드 4U의 모든 상품은 단독 차반 + 단독 가이드로 진행되는 단독투어 상품입니다!</p>
     </div>
     <div class="card-body">
       <form id="quoteForm" method="POST" action="/quote/submit">
-        <!-- ✈ 출발 공항 -->
-        <h5 class="fw-bold mt-4">✈ 출발 공항</h5>
-        <div class="mb-3">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="departure_airport" value="인천공항" id="airport_incheon">
-            <label class="form-check-label" for="airport_incheon">인천공항</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="departure_airport" value="김해공항" id="airport_gimhae">
-            <label class="form-check-label" for="airport_gimhae">김해공항</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="departure_airport" value="기타" id="airport_etc" onchange="toggleAirportOther()">
-            <label class="form-check-label" for="airport_etc">기타 - 직접 입력해 주세요! (예: 청주공항)</label>
-          </div>
-          <input type="text" class="form-control mt-1" name="departure_airport_other" id="departure_airport_other" placeholder="예: 청주공항" style="display:none;">
-        </div>
-
-        <!-- 🏨 리조트 정보 -->
-        <h5 class="fw-bold mt-4">🏨 리조트 정보</h5>
-        <div class="mb-3">
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="resort_status" value="가이드 추천" onchange="toggleResortName()">
-            <label class="form-check-label">예약 전 (가이드 4U 추천)</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="resort_status" value="직접 예약" onchange="toggleResortName()">
-            <label class="form-check-label">예약 전 (직접 예약 예정)</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="resort_status" value="예약 완료" onchange="toggleResortName()">
-            <label class="form-check-label">예약 완료</label>
-          </div>
-          <input type="text" class="form-control mt-1" name="resort_name" id="resort_name_input" placeholder="리조트 이름을 입력해 주세요 (예: 센타라 리조트)" style="display:none;">
-        </div>
-
-        <!-- ✅ 약관동의 -->
-        <div class="border rounded p-3 mb-3">
-          <div class="form-check mb-2">
-            <input class="form-check-input" type="checkbox" id="agree_all">
-            <label class="form-check-label fw-bold" for="agree_all">전체약관동의</label>
-          </div>
-          <div class="ps-3">
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="agree" id="agree1" required>
-              <label class="form-check-label" for="agree1">[필수] 개인정보 수집 및 이용(견적)</label>
-              <span class="float-end"><a href="#" onclick="showTerms(event, 'terms1')">자세히보기 &gt;</a></span>
-            </div>
-            <div class="form-check mt-2">
-              <input class="form-check-input" type="checkbox" name="agree2" id="agree2" required>
-              <label class="form-check-label" for="agree2">[필수] 개인정보 제3자 제공(견적)</label>
-              <span class="float-end"><a href="#" onclick="showTerms(event, 'terms2')">자세히보기 &gt;</a></span>
-            </div>
-          </div>
-        </div>
-
-        <!-- 제출 버튼 -->
-        <div class="text-center">
-          <button type="submit" class="btn btn-success px-4 py-2 fw-bold" style="font-size: 18px;">
-            ✉ 견적 제출
-          </button>
-        </div>
+        {% include 'quote_form_fields.html' %}
       </form>
     </div>
   </div>
 </div>
 
-<!-- 약관 팝업 모달 -->
-<div id="termsModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6);">
-  <div style="background:white; margin:10% auto; padding:20px; width:80%; max-width:500px;">
-    <h5 id="termsTitle"></h5>
-    <p id="termsContent"></p>
-    <div class="text-end">
-      <button class="btn btn-secondary" onclick="closeModal()">닫기</button>
+<div class="modal fade" id="privacyModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">개인정보 제3자 제공</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+      </div>
+      <div class="modal-body">
+        계약 및 진행 과정에서 리조트/가이드에게 필요한 최소한의 정보만 전달됩니다.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+      </div>
     </div>
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
 <script>
+  flatpickr("#travel_period", {
+    mode: "range",
+    dateFormat: "Y-m-d",
+    locale: "ko",
+    showMonths: 2,
+    minDate: "today"
+  });
+
+  function updateProducts() {
+    const region = document.getElementById('region').value;
+    const product = document.getElementById('product');
+    const options = {
+      '푸켓': ['푸켓 자유여행 4박6일', '푸켓 허니문 5성급', '푸켓 가족 풀빌라'],
+      '다낭': ['다낭 3박5일 패키지', '다낭 골프투어', '다낭 자유여행 추천'],
+      '방콕': ['방콕 + 파타야 패키지', '방콕 쇼핑 & 마사지', '방콕 가족 자유여행']
+    };
+    product.innerHTML = '<option value="">상품선택 (원하시는 투어 상품을 선택해 주세요)</option>';
+    if (options[region]) {
+      options[region].forEach(function(item) {
+        const opt = document.createElement('option');
+        opt.value = item;
+        opt.text = item;
+        product.appendChild(opt);
+      });
+    }
+  }
+
+  function fillProductName() {
+    const selected = document.getElementById('product').value;
+    document.getElementById('product_name').value = selected;
+  }
+
+  function formatPhone(input) {
+    let value = input.value.replace(/[^0-9]/g, '');
+    if (value.length >= 10) {
+      input.value = value.replace(/(\d{3})(\d{3,4})(\d{4})/, '$1-$2-$3');
+    }
+  }
+
   function toggleAirportOther() {
-    const isChecked = document.getElementById('airport_etc').checked;
-    document.getElementById('departure_airport_other').style.display = isChecked ? 'block' : 'none';
+    const etcChecked = document.getElementById('airport_etc').checked;
+    const otherInput = document.getElementById('departure_airport_other');
+    otherInput.style.display = etcChecked ? 'block' : 'none';
   }
 
   function toggleResortName() {
     const radios = document.getElementsByName('resort_status');
     const input = document.getElementById('resort_name_input');
-    let visible = false;
+    let show = false;
     radios.forEach(radio => {
       if (radio.checked && radio.value === '예약 완료') {
-        visible = true;
+        show = true;
       }
     });
-    input.style.display = visible ? 'block' : 'none';
-  }
-
-  function showTerms(event, which) {
-    event.preventDefault();
-    document.getElementById('termsModal').style.display = 'block';
-    if (which === 'terms1') {
-      document.getElementById('termsTitle').innerText = '개인정보 수집 및 이용';
-      document.getElementById('termsContent').innerText = '개인정보는 맞춤 견적 요청에만 사용되며, 계약 진행 시까지 보관됩니다.';
-    } else if (which === 'terms2') {
-      document.getElementById('termsTitle').innerText = '개인정보 제3자 제공';
-      document.getElementById('termsContent').innerText = '계약 및 진행 과정에서 리조트/가이드에게 필요한 최소한의 정보만 전달됩니다.';
-    }
-  }
-
-  function closeModal() {
-    document.getElementById('termsModal').style.display = 'none';
+    input.style.display = show ? 'block' : 'none';
   }
 
   document.getElementById('agree_all').addEventListener('change', function () {
-    document.getElementById('agree1').checked = this.checked;
-    document.getElementById('agree2').checked = this.checked;
+    const checked = this.checked;
+    document.getElementById('agree1').checked = checked;
+    document.getElementById('agree2').checked = checked;
   });
 
   window.addEventListener('DOMContentLoaded', () => {
     toggleAirportOther();
     toggleResortName();
+
+    document.querySelectorAll('a[data-bs-toggle="modal"]').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        const modal = new bootstrap.Modal(target);
+        modal.show();
+      });
+    });
   });
 </script>
 {% endblock %}
