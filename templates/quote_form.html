@@ -2,6 +2,8 @@
 {% block title %}맞춤 견적 요청{% endblock %}
 
 {% block content %}
+<!-- ✅ 최종 완성된 맞춤 견적 요청 폼 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <style>
   .quote-box {
     border: 2px solid #ccc;
@@ -30,21 +32,13 @@
   .form-section {
     margin-bottom: 25px;
   }
-  .submit-btn {
-    background-color: #007BFF;
-    color: white;
-    font-size: 18px;
-    padding: 10px 30px;
-    border: none;
-    border-radius: 8px;
-    display: block;
-    margin: 30px auto 0;
-  }
-  .checkbox-group {
+  .inline-inputs {
     display: flex;
-    flex-wrap: wrap;
     gap: 10px;
-    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  .inline-inputs .form-control {
+    flex: 1;
   }
   .people-counter {
     display: flex;
@@ -63,23 +57,17 @@
     font-weight: bold;
     margin-top: 10px;
   }
-  .inline-inputs {
+  .checkbox-group {
     display: flex;
-    gap: 10px;
     flex-wrap: wrap;
-  }
-  .inline-inputs .form-control {
-    flex: 1;
+    gap: 10px;
+    margin-top: 10px;
   }
   .terms-box {
     border: 1px solid #ccc;
     padding: 15px;
     border-radius: 10px;
     background: #fff;
-  }
-  .terms-box label {
-    display: block;
-    margin-top: 8px;
   }
   .terms-popup {
     display: none;
@@ -97,16 +85,6 @@
     overflow-y: auto;
     max-height: 90vh;
   }
-  .terms-popup h4 {
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-  .terms-popup .close-btn {
-    float: right;
-    cursor: pointer;
-    font-weight: bold;
-    color: red;
-  }
 </style>
 
 <div class="quote-box">
@@ -114,13 +92,11 @@
   <div class="quote-subtitle">가이드 4U 에서 제공 하는 모든 투어 상품은 단독 차량 + 단독 가이드를 이용한 단독 투어 입니다!</div>
 
   {% with messages = get_flashed_messages() %}
-    {% if messages %}
-      <div class="alert alert-success">{{ messages[0] }}</div>
-    {% endif %}
+    {% if messages %}<div class="alert alert-success">{{ messages[0] }}</div>{% endif %}
   {% endwith %}
 
   <form method="POST" action="/quote">
-    <!-- 고객 정보 -->
+    <!-- 👤 고객 정보 -->
     <div class="form-section">
       <h5>👤 고객 정보</h5>
       <input type="text" name="name" class="form-control mb-2" placeholder="이름 *" required>
@@ -128,7 +104,7 @@
       <input type="email" name="email" class="form-control" placeholder="이메일 (선택)">
     </div>
 
-    <!-- 총 인원 -->
+    <!-- 👨‍👩‍👧 총 인원 -->
     <div class="form-section">
       <h5>👨‍👩‍👧 총 인원</h5>
       <div class="people-counter">성인:
@@ -149,24 +125,18 @@
       <div class="total-count">총 인원: <span id="total_count">2</span>명</div>
     </div>
 
-    <!-- 투어상품 선택 -->
+    <!-- 🌍 여행지 선택 -->
     <div class="form-section">
-      <h5>🌍 투어상품 선택</h5>
+      <h5>🌍 여행지 선택</h5>
       <div class="inline-inputs">
-        <select name="country" class="form-control" required>
-          <option value="">국가 선택</option>
-        </select>
-        <select name="city" class="form-control" required>
-          <option value="">지역 선택</option>
-        </select>
-        <select name="product" class="form-control" required>
-          <option value="">상품 선택</option>
-        </select>
+        <select name="country" class="form-control" required><option value="">국가 선택</option></select>
+        <select name="city" class="form-control" required><option value="">지역 선택</option></select>
+        <select name="product" class="form-control" required><option value="">상품 선택</option></select>
       </div>
       <input type="text" name="product_free" class="form-control mt-2" placeholder="원하시는 투어 형태를 자유롭게 입력해 주세요!">
     </div>
 
-    <!-- 여행기간 -->
+    <!-- 📅 여행기간 -->
     <div class="form-section">
       <h5>📅 여행기간</h5>
       <input type="text" name="travel_period" id="travel_period" class="form-control" placeholder="출발일 ~ 도착일" required>
@@ -235,8 +205,8 @@
   });
 
   function changeCount(type, amount) {
-    let input = document.getElementById(type);
-    let value = parseInt(input.value) + amount;
+    const input = document.getElementById(type);
+    const value = parseInt(input.value) + amount;
     if (value >= 0) {
       input.value = value;
       updateTotal();
@@ -244,27 +214,34 @@
   }
 
   function updateTotal() {
-    let total = parseInt(document.getElementById('adult').value) +
-                parseInt(document.getElementById('child').value) +
-                parseInt(document.getElementById('infant').value);
+    const total = parseInt(document.getElementById('adult').value) +
+                  parseInt(document.getElementById('child').value) +
+                  parseInt(document.getElementById('infant').value);
     document.getElementById('total_count').innerText = total;
   }
 
+  function formatPhoneNumber(input) {
+    let digits = input.value.replace(/\D/g, '');
+    if (digits.length === 11) {
+      input.value = digits.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+    }
+  }
+
   function toggleFlightInputs() {
-    let selected = document.querySelector('input[name="flight_status"]:checked').value;
+    let selected = document.querySelector('input[name="flight_status"]:checked');
+    const show = selected && selected.value === '예약 완료';
     document.querySelectorAll('.flight-input').forEach(el => {
-      el.classList.toggle('hidden', selected !== '예약 완료');
+      el.classList.toggle('hidden', !show);
     });
   }
 
   function updateResortPlaceholder() {
-    let selected = document.querySelector('input[name="resort_status"]:checked').value;
+    let selected = document.querySelector('input[name="resort_status"]:checked');
     let input = document.getElementById('resort_name');
-    if (selected === '예약 완료') {
-      input.placeholder = "예약하신 리조트 이름을 입력 해주세요!";
-    } else {
-      input.placeholder = "예약을 원하시는 리조트가 있으시면 리조트 이름을 입력 해주세요!";
-    }
+    if (!selected || !input) return;
+    input.placeholder = selected.value === '예약 완료'
+      ? "예약하신 리조트 이름을 입력 해주세요!"
+      : "예약을 원하시는 리조트가 있으시면 리조트 이름을 입력 해주세요!";
   }
 
   function openTerms() {
@@ -275,6 +252,10 @@
     document.getElementById("termsPopup").style.display = "none";
   }
 
-  document.addEventListener("DOMContentLoaded", updateTotal);
+  document.addEventListener("DOMContentLoaded", () => {
+    updateTotal();
+    toggleFlightInputs();
+    updateResortPlaceholder();
+  });
 </script>
 {% endblock %}
