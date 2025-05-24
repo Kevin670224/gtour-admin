@@ -10,72 +10,76 @@
     font-weight: 700;
     font-style: normal;
   }
-
   .quote-title {
     font-family: 'HumanRounded', 'Malgun Gothic', sans-serif;
     font-size: 40px;
     font-weight: 900;
     color: white;
   }
-
   .quote-subtitle {
     color: white;
     font-weight: bold;
     margin-top: 10px;
   }
-
   .card-header-custom {
     background-color: #007bff;
     padding: 30px 20px;
     text-align: center;
     border-radius: 10px 10px 0 0;
   }
-
-  .form-select.country-select { width: 25%; display: inline-block; }
-  .form-select.region-select { width: 25%; display: inline-block; margin-left: 10px; }
-  .form-select.product-select { width: 45%; display: inline-block; margin-left: 10px; }
 </style>
-
-<div class="container-fluid mt-5 mb-5">
-  <div class="card shadow-sm px-3">
+<div class="container mt-5 mb-5">
+  <div class="card shadow-sm">
     <div class="card-header-custom">
       <h1 class="quote-title">✈ 맞춤 견적 요청</h1>
       <p class="quote-subtitle">📌 가이드 4U의 모든 상품은 단독 차량 + 단독 가이드로 진행되는 단독투어 상품입니다!</p>
     </div>
     <div class="card-body">
       <form id="quoteForm" method="POST" action="/quote/submit">
-        <!-- 여기에 견적 요청 관련 입력 항목들이 위치합니다 -->
+        <!-- 출발 공항 -->
         <div class="mb-3">
           <label class="form-label">출발 공항을 선택해 주세요! *</label>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="departure_airport" value="인천공항" id="airport_incheon">
+            <input class="form-check-input airport-option" type="radio" name="departure_airport" value="인천공항" id="airport_incheon">
             <label class="form-check-label" for="airport_incheon">인천공항</label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="departure_airport" value="김해공항" id="airport_gimhae">
+            <input class="form-check-input airport-option" type="radio" name="departure_airport" value="김해공항" id="airport_gimhae">
             <label class="form-check-label" for="airport_gimhae">김해공항</label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="departure_airport" value="기타" id="airport_etc" onchange="toggleAirportOther()">
+            <input class="form-check-input airport-option" type="radio" name="departure_airport" value="기타" id="airport_etc">
             <label class="form-check-label" for="airport_etc">기타 - 직접 입력해 주세요! (예: 청주공항)</label>
             <input type="text" class="form-control mt-1" name="departure_airport_other" id="departure_airport_other" placeholder="예: 청주공항" style="display:none;">
           </div>
         </div>
 
+        <!-- 리조트 상태 -->
         <div class="mb-3">
-          <label class="form-label">리조트 상태</label><br>
-          <input type="radio" name="resort_status" value="가이드 추천" onclick="toggleResortName()"> 예약 전 (가이드 4U 추천)<br>
-          <input type="radio" name="resort_status" value="직접 예약" onclick="toggleResortName()"> 예약 전 (직접 예약 예정)<br>
-          <input type="radio" name="resort_status" value="예약 완료" onclick="toggleResortName()"> 예약 완료
-          <input type="text" class="form-control mt-1" name="resort_name" id="resort_name_input" placeholder="리조트 이름을 입력해 주세요 (예: 센타라 리조트)" style="display:none;">
+          <label class="form-label">리조트 상태</label>
+          <div class="form-check">
+            <input class="form-check-input resort-option" type="radio" name="resort_status" value="예약 전 (가이드 4U 추천)" id="resort_guide">
+            <label class="form-check-label" for="resort_guide">예약 전 (가이드 4U 추천)</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input resort-option" type="radio" name="resort_status" value="예약 전 (직접 예약 예정)" id="resort_self">
+            <label class="form-check-label" for="resort_self">예약 전 (직접 예약 예정)</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input resort-option" type="radio" name="resort_status" value="예약 완료" id="resort_done">
+            <label class="form-check-label" for="resort_done">예약 완료</label>
+            <input type="text" class="form-control mt-1" name="resort_name" id="resort_name_input" placeholder="리조트 이름을 입력해 주세요 (예: 센타라 리조트)" style="display:none;">
+          </div>
         </div>
 
-        <button type="submit" class="btn btn-primary">제출</button>
+        <!-- 제출 -->
+        <div class="text-center">
+          <button type="submit" class="btn btn-primary">제출</button>
+        </div>
       </form>
     </div>
   </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
 <script>
@@ -87,28 +91,28 @@
     minDate: "today"
   });
 
-  function toggleAirportOther() {
-    const etcChecked = document.getElementById('airport_etc').checked;
+  function toggleAirportInput() {
+    const etcRadio = document.getElementById('airport_etc');
     const otherInput = document.getElementById('departure_airport_other');
-    otherInput.style.display = etcChecked ? 'block' : 'none';
+    otherInput.style.display = etcRadio.checked ? 'block' : 'none';
   }
 
-  function toggleResortName() {
-    const radios = document.getElementsByName('resort_status');
-    const input = document.getElementById('resort_name_input');
-    let visible = false;
-    for (let i = 0; i < radios.length; i++) {
-      if (radios[i].checked && radios[i].value === '예약 완료') {
-        visible = true;
-        break;
-      }
-    }
-    input.style.display = visible ? 'block' : 'none';
+  function toggleResortInput() {
+    const doneRadio = document.getElementById('resort_done');
+    const resortInput = document.getElementById('resort_name_input');
+    resortInput.style.display = doneRadio.checked ? 'block' : 'none';
   }
 
-  window.addEventListener('DOMContentLoaded', function () {
-    toggleAirportOther();
-    toggleResortName();
+  document.querySelectorAll(".airport-option").forEach(el => {
+    el.addEventListener("change", toggleAirportInput);
+  });
+  document.querySelectorAll(".resort-option").forEach(el => {
+    el.addEventListener("change", toggleResortInput);
+  });
+
+  window.addEventListener("DOMContentLoaded", function () {
+    toggleAirportInput();
+    toggleResortInput();
   });
 </script>
 {% endblock %}
