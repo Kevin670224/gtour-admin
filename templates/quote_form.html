@@ -163,36 +163,67 @@ S
 
 
         <!-- 리조트 정보 -->
-        <h5 class="fw-bold mt-4">🏨 리조트 정보</h5>
-        <div class="mb-3">
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="resort_status" value="가이드 추천">
-            <label class="form-check-label">예약 전 (가이드 4U 추천)</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="resort_status" value="직접 예약">
-            <label class="form-check-label">예약 전 (직접 예약 예정)</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="resort_status" value="예약 완료">
-            <label class="form-check-label">예약 완료</label>
-            <input type="text" class="form-control mt-1" name="resort_name" placeholder="리조트 이름을 입력해 주세요 (예: 센타라 리조트)">
-          </div>
-        </div>
-        <div class="mb-3">
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" name="resort_style" value="5성급">
-            <label class="form-check-label">5성급</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" name="resort_style" value="4성급">
-            <label class="form-check-label">4성급</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" name="resort_style" value="풀빌라">
-            <label class="form-check-label">풀빌라</label>
-          </div>
-        </div>
+<h5 class="fw-bold mt-4">🏨 리조트 정보</h5>
+<div class="mb-3">
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="resort_status" value="가이드 추천" id="resort1" onclick="toggleResortInput()">
+    <label class="form-check-label" for="resort1">예약 전 (가이드 4U 추천)</label>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="resort_status" value="직접 예약 예정" id="resort2" onclick="toggleResortInput()">
+    <label class="form-check-label" for="resort2">예약 전 (직접 예약 예정)</label>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="resort_status" value="예약 완료" id="resort3" onclick="toggleResortInput()">
+    <label class="form-check-label" for="resort3">예약 완료</label>
+  </div>
+
+  <!-- 리조트 입력창 (상태에 따라 문구 변경) -->
+  <input type="text" id="resort_input" name="resort_name" class="form-control mt-2" style="display: none;" placeholder="">
+</div>
+
+<!-- 리조트 스타일 체크박스 -->
+<div class="mb-3">
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="checkbox" name="resort_style" value="5성급">
+    <label class="form-check-label">5성급</label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="checkbox" name="resort_style" value="4성급">
+    <label class="form-check-label">4성급</label>
+  </div>
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="checkbox" name="resort_style" value="풀빌라">
+    <label class="form-check-label">풀빌라</label>
+  </div>
+</div>
+
+<script>
+  function toggleResortInput() {
+    const selected = document.querySelector('input[name="resort_status"]:checked');
+    const resortInput = document.getElementById('resort_input');
+
+    if (!selected) {
+      resortInput.style.display = 'none';
+      return;
+    }
+
+    const value = selected.value;
+
+    if (value === "예약 완료") {
+      resortInput.style.display = 'block';
+      resortInput.placeholder = "예약하신 리조트 이름을 입력해 주세요 (예: 센타라 리조트)";
+    } else if (value === "가이드 추천") {
+      resortInput.style.display = 'block';
+      resortInput.placeholder = "원하시는 리조트가 있으시면 리조트 이름을 입력해 주세요! (예: 센타라 빌라)";
+    } else {
+      resortInput.style.display = 'none';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', toggleResortInput);
+</script>
+
 
         <!-- 기타 요청사항 -->
         <h5 class="fw-bold mt-4">📝 기타 요청사항</h5>
