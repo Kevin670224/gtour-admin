@@ -1,126 +1,216 @@
 {% extends "layout.html" %}
-{% block title %}✨ 맞춤 견적 요청 {% endblock %}
+{% block title %}맞춤 견적 요청{% endblock %}
 
 {% block content %}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
 <style>
-  @font-face {
-    font-family: 'HumanRounded';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2107@1.0/HumanRounded.woff') format('woff');
-    font-weight: 700;
-    font-style: normal;
+  .quote-box {
+    border: 2px solid #ccc;
+    border-radius: 15px;
+    padding: 30px;
+    background-color: #f9f9f9;
+    max-width: 1000px;
+    margin: auto;
   }
+
   .quote-title {
-    font-family: 'HumanRounded', 'Malgun Gothic', sans-serif;
-    font-size: 40px;
-    font-weight: 900;
+    background-color: #007BFF;
     color: white;
+    padding: 15px;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 10px;
+    margin-bottom: 30px;
   }
-  .quote-subtitle {
-    color: white;
+
+  .form-section {
+    margin-bottom: 25px;
+  }
+
+  .form-section h5 {
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+
+  .inline-inputs {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .inline-inputs .form-control {
+    flex: 1;
+  }
+
+  .checkbox-group {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 5px;
+  }
+
+  .people-counter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .people-counter input {
+    width: 60px;
+    text-align: center;
+  }
+
+  .btn-counter {
+    padding: 5px 10px;
+  }
+
+  .total-count {
     font-weight: bold;
     margin-top: 10px;
   }
-  .card-header-custom {
-    background-color: #007bff;
-    padding: 30px 20px;
-    text-align: center;
-    border-radius: 10px 10px 0 0;
+
+  .submit-btn {
+    background-color: #007BFF;
+    color: white;
+    font-size: 18px;
+    padding: 10px 30px;
+    border: none;
+    border-radius: 8px;
+    display: block;
+    margin: 30px auto 0;
   }
 </style>
 
-<div class="container-fluid mt-5 mb-5">
-  <div class="card shadow-sm px-3">
-    <div class="card-header-custom">
-      <h1 class="quote-title">✈ 맞춤 견적 요청</h1>
-      <p class="quote-subtitle">📌 가이드 4U의 모든 상품은 단독 차량 + 단독 가이드로 진행되는 단독투어 상품입니다!</p>
+<div class="quote-box">
+  <div class="quote-title">📝 맞춤 견적 요청</div>
+  <form method="POST" action="/quote">
+
+    <!-- 고객 정보 -->
+    <div class="form-section">
+      <h5>👤 고객 정보</h5>
+      <input type="text" name="name" class="form-control mb-2" placeholder="이름 *" required>
+      <input type="tel" name="phone" class="form-control mb-2" placeholder="전화번호 (01012345678 형식)" required oninput="formatPhoneNumber(this)">
+      <input type="email" name="email" class="form-control" placeholder="이메일 (선택)">
+
+      <!-- 총 인원 -->
+      <div class="mt-4">
+        <h5>👨‍👩‍👧 총 인원</h5>
+        <div class="people-counter">성인:
+          <button type="button" class="btn btn-counter btn-secondary" onclick="changeCount('adult', -1)">-</button>
+          <input type="number" name="adult" id="adult" value="2" min="0" readonly>
+          <button type="button" class="btn btn-counter btn-secondary" onclick="changeCount('adult', 1)">+</button>
+        </div>
+        <div class="people-counter">아동:
+          <button type="button" class="btn btn-counter btn-secondary" onclick="changeCount('child', -1)">-</button>
+          <input type="number" name="child" id="child" value="0" min="0" readonly>
+          <button type="button" class="btn btn-counter btn-secondary" onclick="changeCount('child', 1)">+</button>
+        </div>
+        <div class="people-counter">유아:
+          <button type="button" class="btn btn-counter btn-secondary" onclick="changeCount('infant', -1)">-</button>
+          <input type="number" name="infant" id="infant" value="0" min="0" readonly>
+          <button type="button" class="btn btn-counter btn-secondary" onclick="changeCount('infant', 1)">+</button>
+        </div>
+        <div class="total-count">총 인원: <span id="total_count">2</span>명</div>
+      </div>
     </div>
-    <div class="card-body">
-      <form id="quoteForm" method="POST" action="/quote/submit">
 
-        <!-- 고객 정보 -->
-        <h5 class="fw-bold mt-4">🣍 고객정보</h5>
-        <div class="mb-3">
-          <label class="form-label">고객명 *</label>
-          <input type="text" class="form-control" name="customer_name" required>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">연락처 *</label>
-          <input type="text" class="form-control" name="phone" placeholder="010-1234-5678" required oninput="formatPhone(this)">
-        </div>
-        <div class="mb-3">
-          <label class="form-label">이메일</label>
-          <input type="email" class="form-control" name="email" placeholder="예: guide4u@email.com">
-        </div>
-        <!-- ✅ 총 인원 입력 -->
-        <div class="mb-3">
-          <label class="form-label">총 인원 <span class="text-muted">(성인 / 아동 / 유아)</span></label>
-          <div class="d-flex gap-3">
-            <input type="number" name="adult" class="form-control" placeholder="성인 (13세 이상)" min="0" required>
-            <input type="number" name="child" class="form-control" placeholder="아동 (3~12세)" min="0" required>
-            <input type="number" name="infant" class="form-control" placeholder="유아 (24개월 미만)" min="0" required>
-          </div>
-        </div>
-
-        <!-- 이후 모든 구조 동일 유지: 여행지, 항공, 리조트 등 -->
-        <!-- ✂️ 기존 코드 동일하게 이어지며 삭제 없이 연결됩니다 -->
-
-        <!-- 여행지 선택 -->
-        <h5 class="fw-bold mt-4">🌍 여행지 선택</h5>
-        <!-- ... 생략 없이 이전 코드 유지 ... -->
-
-        <!-- ✂️ 항공 정보, 리조트 정보, 기타 요청사항, 약관 동의, 제출 버튼, flatpickr 스크립트 모두 그대로 유지 -->
-
-      </form>
+    <!-- 여행지 선택 -->
+    <div class="form-section">
+      <h5>🌍 여행지 선택</h5>
+      <div class="inline-inputs">
+        <select name="country" class="form-control" required>
+          <option value="">국가 선택</option>
+          <option value="태국">태국</option>
+          <option value="베트남">베트남</option>
+        </select>
+        <select name="city" class="form-control" required>
+          <option value="">지역 선택</option>
+          <option value="푸켓">푸켓</option>
+          <option value="방콕">방콕</option>
+        </select>
+        <input type="text" name="product" class="form-control" placeholder="여행 상품명 (예: 방콕/파타야 3박5일)">
+      </div>
     </div>
-  </div>
+
+    <!-- 여행 기간 -->
+    <div class="form-section">
+      <h5>📅 여행기간</h5>
+      <input type="text" name="travel_period" id="travel_period" class="form-control" placeholder="출발일 ~ 도착일" required>
+    </div>
+
+    <!-- 항공 정보 -->
+    <div class="form-section">
+      <h5>✈ 항공 정보</h5>
+      <div class="checkbox-group">
+        <label><input type="radio" name="flight_status" value="추천" required> 예약 전 (가이드 4U 추천)</label>
+        <label><input type="radio" name="flight_status" value="직접 예약 예정"> 예약 전 (직접 예약 예정)</label>
+        <label><input type="radio" name="flight_status" value="예약 완료"> 예약 완료</label>
+      </div>
+      <input type="text" name="departure_flight" class="form-control mb-2" placeholder="출국 항공편명 (예: TG689)">
+      <input type="text" name="return_flight" class="form-control" placeholder="귀국 항공편명 (예: TG688)">
+    </div>
+
+    <!-- 리조트 정보 -->
+    <div class="form-section">
+      <h5>🏨 리조트 정보</h5>
+      <div class="checkbox-group">
+        <label><input type="radio" name="resort_status" value="추천" required> 예약 전 (가이드 4U 추천)</label>
+        <label><input type="radio" name="resort_status" value="직접 예약 예정"> 예약 전 (직접 예약 예정)</label>
+        <label><input type="radio" name="resort_status" value="예약 완료"> 예약 완료</label>
+      </div>
+      <input type="text" name="resort_name" class="form-control" placeholder="예약을 원하시는 리조트가 있으시면 리조트 이름을 입력 해주세요!">
+    </div>
+
+    <!-- 기타 요청사항 -->
+    <div class="form-section">
+      <h5>📌 기타 요청사항</h5>
+      <textarea name="requests" class="form-control" rows="4" placeholder="요청사항이 있다면 자유롭게 작성해 주세요."></textarea>
+    </div>
+
+    <!-- 약관 동의 -->
+    <div class="form-section form-check">
+      <input type="checkbox" name="agree" class="form-check-input" id="agree" required>
+      <label class="form-check-label" for="agree">개인정보 제공 및 이용에 동의합니다.</label>
+    </div>
+
+    <!-- 제출 버튼 -->
+    <button type="submit" class="submit-btn">✉ 견적 요청 제출</button>
+  </form>
 </div>
 
+<!-- 날짜 선택 및 전화번호/인원수 JS -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
 <script>
   flatpickr("#travel_period", {
     mode: "range",
     dateFormat: "Y-m-d",
-    locale: "ko",
-    showMonths: 2,
-    minDate: "today"
+    locale: "ko"
   });
 
-  function formatPhone(input) {
-    let value = input.value.replace(/[^0-9]/g, '');
-    if (value.length >= 10) {
-      input.value = value.replace(/(\d{3})(\d{3,4})(\d{4})/, '$1-$2-$3');
+  function formatPhoneNumber(input) {
+    let digits = input.value.replace(/\D/g, '');
+    if (digits.length === 11) {
+      input.value = digits.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
     }
   }
 
-  function toggleAirportOther() {
-    const etcChecked = document.getElementById('airport_etc').checked;
-    const otherInput = document.getElementById('departure_airport_other');
-    otherInput.style.display = etcChecked ? 'block' : 'none';
+  function changeCount(type, amount) {
+    let input = document.getElementById(type);
+    let value = parseInt(input.value) + amount;
+    if (value >= 0) {
+      input.value = value;
+      updateTotal();
+    }
   }
 
-  function toggleResortName() {
-    const radios = document.getElementsByName('resort_status');
-    const input = document.getElementById('resort_name_input');
-    let show = false;
-    radios.forEach(radio => {
-      if (radio.checked && radio.value === '예약 완료') {
-        show = true;
-      }
-    });
-    input.style.display = show ? 'block' : 'none';
+  function updateTotal() {
+    let total = parseInt(document.getElementById('adult').value) +
+                parseInt(document.getElementById('child').value) +
+                parseInt(document.getElementById('infant').value);
+    document.getElementById('total_count').innerText = total;
   }
 
-  document.getElementById('agree_all').addEventListener('change', function () {
-    const checked = this.checked;
-    document.getElementById('agree1').checked = checked;
-    document.getElementById('agree2').checked = checked;
-  });
-
-  window.addEventListener('DOMContentLoaded', () => {
-    toggleAirportOther();
-    toggleResortName();
-  });
+  document.addEventListener("DOMContentLoaded", updateTotal);
 </script>
 {% endblock %}
