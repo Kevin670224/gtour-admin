@@ -2,7 +2,7 @@
 {% block title %}맞춤 견적 요청 목록{% endblock %}
 
 {% block content %}
-<div class="container-fluid px-0 mt-2">
+<div class="w-100 mt-2 px-4">  <!-- 왼쪽 여백 제거 + 상단 붙이기 -->
   <h2 class="mb-3">맞춤 견적 요청 목록</h2>
 
   <!-- 필터 -->
@@ -28,8 +28,8 @@
   </form>
 
   <!-- 견적 목록 -->
-  <div class="table-responsive px-3">
-   <table class="table table-bordered table-striped text-center align-middle">
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped text-center align-middle">
       <thead class="table-light">
         <tr style="white-space: nowrap;">
           <th>견적번호</th>
@@ -40,10 +40,10 @@
           <th>국가</th>
           <th>지역</th>
           <th>투어상품</th>
-          <th>항공정보</th>
-          <th>리조트정보</th>
+          <th>항공</th>
+          <th>리조트</th>
           <th>여행기간</th>
-          <th>여행인원</th>
+          <th>총인원</th>
           <th>등록일</th>
           <th>상세</th>
         </tr>
@@ -54,7 +54,7 @@
           <td>{{ quote.quote_number }}</td>
           <td>
             <form method="POST" action="/admin/quotes/{{ quote.id }}/update_status">
-              <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+              <select name="status" class="form-select form-select-sm text-center" onchange="this.form.submit()">
                 <option value="견적요청" {% if quote.status == '견적요청' %}selected{% endif %}>견적요청</option>
                 <option value="작성중" {% if quote.status == '작성중' %}selected{% endif %}>작성중</option>
                 <option value="발송완료" {% if quote.status == '발송완료' %}selected{% endif %}>발송완료</option>
