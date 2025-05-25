@@ -73,7 +73,7 @@
     <!-- 여행기간 -->
     <div class="form-section">
       <h4>여행기간</h4>
-      <input type="text" class="form-control" name="travel_period" id="travelPeriod" value="{{ quote.travel_period or '' }}">
+      <input type="text" class="form-control" name="travel_period" value="{{ quote.start_date }} ~ {{ quote.end_date }}">
     </div>
 
     <!-- 총 인원 -->
@@ -102,47 +102,46 @@
     <!-- 항공 정보 -->
     <div class="form-section">
       <h4>항공 정보</h4>
+      {% set flight = quote.flight_status or '' %}
       <div class="form-check">
-        <input class="form-check-input" type="radio" name="flight_status" value="추천" id="flight1" {% if quote.flight_status == '추천' %}checked{% endif %}>
-        <label class="form-check-label" for="flight1">예약 전 (가이드 4U 추천)</label>
+        <input class="form-check-input" type="radio" name="flight_status" value="예약전 (가이드 4U 추천)" id="flight1" {% if flight == '예약전 (가이드 4U 추천)' %}checked{% endif %}>
+        <label class="form-check-label" for="flight1">예약전 (가이드 4U 추천)</label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="radio" name="flight_status" value="직접예약" id="flight2" {% if quote.flight_status == '직접예약' %}checked{% endif %}>
-        <label class="form-check-label" for="flight2">예약 전 (직접 예약 예정)</label>
+        <input class="form-check-input" type="radio" name="flight_status" value="예약전 (직접 예약 예정)" id="flight2" {% if flight == '예약전 (직접 예약 예정)' %}checked{% endif %}>
+        <label class="form-check-label" for="flight2">예약전 (직접 예약 예정)</label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="radio" name="flight_status" value="예약완료" id="flight3" {% if quote.flight_status == '예약완료' %}checked{% endif %}>
-        <label class="form-check-label" for="flight3">예약 완료</label>
+        <input class="form-check-input" type="radio" name="flight_status" value="예약완료" id="flight3" {% if flight == '예약완료' %}checked{% endif %}>
+        <label class="form-check-label" for="flight3">예약완료</label>
       </div>
       <div class="mt-3">
         <input type="text" name="flight_detail" class="form-control" placeholder="항공편 상세" value="{{ quote.flight_detail or '' }}">
       </div>
     </div>
-
     <!-- 리조트 정보 -->
     <div class="form-section">
       <h4>리조트 정보</h4>
+      {% set resort = quote.resort_status or '' %}
       <div class="form-check">
-        <input class="form-check-input" type="radio" name="resort_status" value="추천" id="resort1" {% if quote.resort_status == '추천' %}checked{% endif %}>
+        <input class="form-check-input" type="radio" name="resort_status" value="예약 전 (가이드 4U 추천)" id="resort1" {% if resort == '예약 전 (가이드 4U 추천)' %}checked{% endif %}>
         <label class="form-check-label" for="resort1">예약 전 (가이드 4U 추천)</label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="radio" name="resort_status" value="직접예약" id="resort2" {% if quote.resort_status == '직접예약' %}checked{% endif %}>
+        <input class="form-check-input" type="radio" name="resort_status" value="예약 전 (직접 예약 예정)" id="resort2" {% if resort == '예약 전 (직접 예약 예정)' %}checked{% endif %}>
         <label class="form-check-label" for="resort2">예약 전 (직접 예약 예정)</label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="radio" name="resort_status" value="예약완료" id="resort3" {% if quote.resort_status == '예약완료' %}checked{% endif %}>
-        <label class="form-check-label" for="resort3">예약 완료</label>
+        <input class="form-check-input" type="radio" name="resort_status" value="예약완료" id="resort3" {% if resort == '예약완료' %}checked{% endif %}>
+        <label class="form-check-label" for="resort3">예약완료</label>
       </div>
-
       <input type="text" name="resort_name" class="form-control mt-2" placeholder="예약하신 리조트 이름을 입력 해주세요!" value="{{ quote.resort_name or '' }}">
 
       <div class="mt-3">
         <label>원하는 리조트 스타일</label><br>
         {% for style in ['4성급', '5성급', '풀빌라'] %}
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" name="resort_style" value="{{ style }}"
-                 {% if style in (quote.resort_style or '') %}checked{% endif %}>
+          <input class="form-check-input" type="checkbox" name="resort_style" value="{{ style }}" {% if style in (quote.resort_style or '') %}checked{% endif %}>
           <label class="form-check-label">{{ style }}</label>
         </div>
         {% endfor %}
@@ -155,21 +154,15 @@
       <textarea name="requirements" class="form-control" rows="4">{{ quote.requirements or '' }}</textarea>
     </div>
 
+    <!-- 저장 버튼 -->
     <div class="text-end mt-4">
       <button type="submit" class="btn btn-primary btn-lg">견적 작성 완료</button>
     </div>
   </form>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
-  flatpickr("#travelPeriod", {
-    mode: "range",
-    dateFormat: "Y-m-d",
-    minDate: "today",
-    locale: "ko"
-  });
-
+  // 총 인원 자동 계산
   function updateTotalPeople() {
     const adult = parseInt(document.querySelector('input[name="adult"]').value || 0);
     const child = parseInt(document.querySelector('input[name="child"]').value || 0);
@@ -184,3 +177,4 @@
   updateTotalPeople();
 </script>
 {% endblock %}
+
