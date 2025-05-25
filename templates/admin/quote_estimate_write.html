@@ -2,36 +2,46 @@
 {% block title %}견적서 작성{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-  <h2 class="mb-4">📝 고객 요청 기반 견적서 작성</h2>
+<div class="container mt-5 mb-5" style="max-width: 900px; border: 1px solid #dee2e6; border-radius: 10px; padding: 30px;">
+  <div class="bg-primary text-white text-center py-3 rounded mb-4">
+    <h3 class="m-0">✏️ 고객 요청 기반 견적서 작성</h3>
+  </div>
 
-  <form method="POST" action="{{ url_for('admin_quote.create_estimate', quote_id=quote.id) }}">
+  <form method="POST">
+    <!-- 담당자 이름 -->
     <div class="mb-3">
-      <label class="form-label">담당자 이름</label>
+      <label class="form-label fw-bold">담당자 이름</label>
       <input type="text" class="form-control" name="manager_name" required>
     </div>
 
+    <!-- 여행 일정 요약 -->
     <div class="mb-3">
-      <label class="form-label">여행 일정 요약</label>
+      <label class="form-label fw-bold">여행 일정 요약</label>
       <textarea class="form-control" name="itinerary_summary" rows="3" placeholder="예: 1일차 방콕 시티투어, 2일차 파타야 바닷가..."></textarea>
     </div>
 
+    <!-- 포함 내역 -->
     <div class="mb-3">
-      <label class="form-label">포함 내역</label>
+      <label class="form-label fw-bold">포함 내역</label>
       <textarea class="form-control" name="included_items" rows="3"></textarea>
     </div>
 
+    <!-- 불포함 내역 -->
     <div class="mb-3">
-      <label class="form-label">불포함 내역</label>
+      <label class="form-label fw-bold">불포함 내역</label>
       <textarea class="form-control" name="excluded_items" rows="3"></textarea>
     </div>
 
-    <div class="mb-3">
-      <label class="form-label">총 견적 금액 (₩)</label>
+    <!-- 총 견적 금액 -->
+    <div class="mb-4">
+      <label class="form-label fw-bold">총 견적 금액 (₩)</label>
       <input type="number" class="form-control" name="total_price" required>
     </div>
 
-    <button type="submit" class="btn btn-primary">💾 견적서 저장</button>
+    <!-- 저장 버튼 -->
+    <div class="text-center">
+      <button type="submit" class="btn btn-primary btn-lg">💾 견적서 저장</button>
+    </div>
   </form>
 </div>
 {% endblock %}
