@@ -73,4 +73,5 @@ def create_estimate(quote_id):
         flash("견적서가 저장되었습니다.", "success")
         return redirect(url_for("admin_quote.quote_detail", quote_id=quote.id))
 
-    return render_template("admin/quote_write.html", quote=quote)
+    return render_template("admin/quote_estimate_write.html", quote=quote)
+
