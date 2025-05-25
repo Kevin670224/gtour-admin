@@ -64,6 +64,7 @@ def quote_detail(quote_id):
 # ✅ 견적서 작성 폼
 @admin_quote_bp.route("/quotes/<int:quote_id>/write", methods=["GET", "POST"])
 def create_estimate(quote_id):
+    print(f"✅ create_estimate 함수 실행됨! quote_id: {quote_id}")  # 👉 로그로 경로 진입 여부 확인용
     quote = Quote.query.get_or_404(quote_id)
 
     if request.method == "POST":
@@ -74,4 +75,3 @@ def create_estimate(quote_id):
         return redirect(url_for("admin_quote.quote_detail", quote_id=quote.id))
 
     return render_template("admin/quote_estimate_write.html", quote=quote)
-
