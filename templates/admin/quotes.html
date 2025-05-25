@@ -5,7 +5,7 @@
 <div class="container mt-4">
   <h2 class="mb-4">맞춤 견적 요청 목록</h2>
 
-  <!-- 검색 필터 -->
+  <!-- 필터 -->
   <form method="GET" class="row g-3 mb-4">
     <div class="col-md-2">
       <select name="status" class="form-select">
@@ -27,57 +27,59 @@
     </div>
   </form>
 
-  <!-- 견적 목록 테이블 -->
-  <table class="table table-bordered table-striped align-middle text-center">
-    <thead class="table-light">
-      <tr>
-        <th>견적번호</th>
-        <th>상태</th>
-        <th>고객명</th>
-        <th>연락처</th>
-        <th>이메일</th>
-        <th>국가</th>
-        <th>지역</th>
-        <th>투어상품</th>
-        <th>항공정보</th>
-        <th>리조트정보</th>
-        <th>여행기간</th>
-        <th>여행인원</th>
-        <th>등록일</th>
-        <th>상세</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for quote in quotes %}
-      <tr>
-        <td>{{ quote.quote_number }}</td>
-        <td>
-          <form method="POST" action="/admin/quotes/{{ quote.id }}/update_status">
-            <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
-              <option value="견적요청" {% if quote.status == '견적요청' %}selected{% endif %}>견적요청</option>
-              <option value="작성중" {% if quote.status == '작성중' %}selected{% endif %}>작성중</option>
-              <option value="발송완료" {% if quote.status == '발송완료' %}selected{% endif %}>발송완료</option>
-              <option value="휴지통" {% if quote.status == '휴지통' %}selected{% endif %}>휴지통</option>
-            </select>
-          </form>
-        </td>
-        <td>{{ quote.customer_name }}</td>
-        <td>{{ quote.phone }}</td>
-        <td>{{ quote.email or '-' }}</td>
-        <td>{{ quote.country or '-' }}</td>
-        <td>{{ quote.region or '-' }}</td>
-        <td>{{ quote.product or '-' }}</td>
-        <td>{{ quote.flight_status or '-' }}</td>
-        <td>{{ quote.resort_status or '-' }}</td>
-        <td>{{ quote.travel_period or (quote.start_date ~ ' ~ ' ~ quote.end_date) }}</td>
-        <td>{{ (quote.adult or 0) + (quote.child or 0) + (quote.infant or 0) }}</td>
-        <td>{{ quote.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
-        <td>
-          <a href="{{ url_for('admin_quote.quote_detail', quote_id=quote.id) }}" class="btn btn-sm btn-outline-primary">상세보기</a>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <!-- 견적 목록 -->
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped align-middle text-center">
+      <thead class="table-light">
+        <tr style="white-space: nowrap;">
+          <th>견적번호</th>
+          <th>상태</th>
+          <th>고객명</th>
+          <th>연락처</th>
+          <th>이메일</th>
+          <th>국가</th>
+          <th>지역</th>
+          <th>투어상품</th>
+          <th>항공정보</th>
+          <th>리조트정보</th>
+          <th>여행기간</th>
+          <th>여행인원</th>
+          <th>등록일</th>
+          <th>상세</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for quote in quotes %}
+        <tr style="white-space: nowrap;">
+          <td>{{ quote.quote_number }}</td>
+          <td>
+            <form method="POST" action="/admin/quotes/{{ quote.id }}/update_status">
+              <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                <option value="견적요청" {% if quote.status == '견적요청' %}selected{% endif %}>견적요청</option>
+                <option value="작성중" {% if quote.status == '작성중' %}selected{% endif %}>작성중</option>
+                <option value="발송완료" {% if quote.status == '발송완료' %}selected{% endif %}>발송완료</option>
+                <option value="휴지통" {% if quote.status == '휴지통' %}selected{% endif %}>휴지통</option>
+              </select>
+            </form>
+          </td>
+          <td>{{ quote.customer_name }}</td>
+          <td>{{ quote.phone }}</td>
+          <td>{{ quote.email or '-' }}</td>
+          <td>{{ quote.country or '-' }}</td>
+          <td>{{ quote.region or '-' }}</td>
+          <td>{{ quote.product or '-' }}</td>
+          <td>{{ quote.flight_status or '-' }}</td>
+          <td>{{ quote.resort_status or '-' }}</td>
+          <td>{{ quote.travel_period or (quote.start_date ~ ' ~ ' ~ quote.end_date) }}</td>
+          <td>{{ (quote.adult or 0) + (quote.child or 0) + (quote.infant or 0) }}</td>
+          <td>{{ quote.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+          <td>
+            <a href="{{ url_for('admin_quote.quote_detail', quote_id=quote.id) }}" class="btn btn-sm btn-outline-primary">상세보기</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
 {% endblock %}
