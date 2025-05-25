@@ -37,7 +37,7 @@
       <div class="row mb-3">
         <div class="col-md-4">
           <label>이름</label>
-          <input type="text" class="form-control" name="name" value="{{ quote.name or '' }}">
+          <input type="text" class="form-control" name="customer_name" value="{{ quote.customer_name or '' }}">
         </div>
         <div class="col-md-4">
           <label>전화번호</label>
@@ -64,10 +64,10 @@
         </div>
         <div class="col-md-4">
           <label>상품명</label>
-          <input type="text" class="form-control" name="product_name" value="{{ quote.product_name or '' }}">
+          <input type="text" class="form-control" name="product" value="{{ quote.product or '' }}">
         </div>
       </div>
-      <input type="text" name="custom_product" class="form-control" placeholder="원하시는 투어 형태를 자유롭게 입력해 주세요!" value="{{ quote.custom_product or '' }}">
+      <input type="text" name="product_name" class="form-control" placeholder="원하시는 투어 형태를 자유롭게 입력해 주세요!" value="{{ quote.product_name or '' }}">
     </div>
 
     <!-- 여행기간 -->
@@ -82,15 +82,15 @@
       <div class="row">
         <div class="col-md-2">
           <label>성인</label>
-          <input type="number" name="adults" class="form-control" value="{{ quote.adults or 0 }}">
+          <input type="number" name="adult" class="form-control" value="{{ quote.adult or 0 }}">
         </div>
         <div class="col-md-2">
           <label>아동</label>
-          <input type="number" name="children" class="form-control" value="{{ quote.children or 0 }}">
+          <input type="number" name="child" class="form-control" value="{{ quote.child or 0 }}">
         </div>
         <div class="col-md-2">
           <label>유아</label>
-          <input type="number" name="infants" class="form-control" value="{{ quote.infants or 0 }}">
+          <input type="number" name="infant" class="form-control" value="{{ quote.infant or 0 }}">
         </div>
         <div class="col-md-3">
           <label>총 인원</label>
@@ -114,22 +114,8 @@
         <input class="form-check-input" type="radio" name="flight_status" value="예약완료" id="flight3" {% if quote.flight_status == '예약완료' %}checked{% endif %}>
         <label class="form-check-label" for="flight3">예약 완료</label>
       </div>
-
-      <div id="flightDetail" class="mt-3" style="display: {% if quote.flight_status == '예약완료' %}block{% else %}none{% endif %};">
-        <div class="row">
-          <div class="col-md-3">
-            <input type="text" name="departure_flight" class="form-control" placeholder="출국편명" value="{{ quote.departure_flight or '' }}">
-          </div>
-          <div class="col-md-3">
-            <input type="text" name="return_flight" class="form-control" placeholder="귀국편명" value="{{ quote.return_flight or '' }}">
-          </div>
-          <div class="col-md-3">
-            <input type="text" name="departure_time" class="form-control" placeholder="출국시간" value="{{ quote.departure_time or '' }}">
-          </div>
-          <div class="col-md-3">
-            <input type="text" name="return_time" class="form-control" placeholder="귀국시간" value="{{ quote.return_time or '' }}">
-          </div>
-        </div>
+      <div class="mt-3">
+        <input type="text" name="flight_detail" class="form-control" placeholder="항공편 상세" value="{{ quote.flight_detail or '' }}">
       </div>
     </div>
 
@@ -149,18 +135,16 @@
         <label class="form-check-label" for="resort3">예약 완료</label>
       </div>
 
-      <input type="text" id="resortNameInput" name="resort_name" class="form-control mt-2"
-             style="display: {% if quote.resort_status == '예약완료' %}block{% else %}none{% endif %};"
-             placeholder="예약하신 리조트 이름을 입력 해주세요!" value="{{ quote.resort_name or '' }}">
+      <input type="text" name="resort_name" class="form-control mt-2" placeholder="예약하신 리조트 이름을 입력 해주세요!" value="{{ quote.resort_name or '' }}">
 
       <div class="mt-3">
         <label>원하는 리조트 스타일</label><br>
         {% for style in ['4성급', '5성급', '풀빌라'] %}
-          <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" name="resort_style" value="{{ style }}"
-                   {% if style in (quote.resort_style or '') %}checked{% endif %}>
-            <label class="form-check-label">{{ style }}</label>
-          </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" name="resort_style" value="{{ style }}"
+                 {% if style in (quote.resort_style or '') %}checked{% endif %}>
+          <label class="form-check-label">{{ style }}</label>
+        </div>
         {% endfor %}
       </div>
     </div>
@@ -168,7 +152,7 @@
     <!-- 기타 요청사항 -->
     <div class="form-section">
       <h4>기타 요청사항</h4>
-      <textarea name="additional_request" class="form-control" rows="4">{{ quote.requirements or '' }}</textarea>
+      <textarea name="requirements" class="form-control" rows="4">{{ quote.requirements or '' }}</textarea>
     </div>
 
     <div class="text-end mt-4">
@@ -187,29 +171,16 @@
   });
 
   function updateTotalPeople() {
-    const adults = parseInt(document.querySelector('input[name="adults"]').value || 0);
-    const children = parseInt(document.querySelector('input[name="children"]').value || 0);
-    const infants = parseInt(document.querySelector('input[name="infants"]').value || 0);
-    document.getElementById("totalPeople").value = adults + children + infants;
+    const adult = parseInt(document.querySelector('input[name="adult"]').value || 0);
+    const child = parseInt(document.querySelector('input[name="child"]').value || 0);
+    const infant = parseInt(document.querySelector('input[name="infant"]').value || 0);
+    document.getElementById("totalPeople").value = adult + child + infant;
   }
 
-  ['adults', 'children', 'infants'].forEach(name => {
+  ['adult', 'child', 'infant'].forEach(name => {
     document.querySelector(`input[name="${name}"]`).addEventListener('input', updateTotalPeople);
   });
 
   updateTotalPeople();
-
-  // 항공/리조트 항목 보여주기
-  function toggleFlightDetail() {
-    const selected = document.querySelector('input[name="flight_status"]:checked').value;
-    document.getElementById("flightDetail").style.display = selected === "예약완료" ? "block" : "none";
-  }
-  function toggleResortInput() {
-    const selected = document.querySelector('input[name="resort_status"]:checked').value;
-    document.getElementById("resortNameInput").style.display = selected === "예약완료" ? "block" : "none";
-  }
-
-  document.querySelectorAll('input[name="flight_status"]').forEach(r => r.addEventListener("change", toggleFlightDetail));
-  document.querySelectorAll('input[name="resort_status"]').forEach(r => r.addEventListener("change", toggleResortInput));
 </script>
 {% endblock %}
