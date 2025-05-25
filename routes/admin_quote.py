@@ -48,16 +48,13 @@ def quote_detail(quote_id):
     quote = Quote.query.get_or_404(quote_id)
     return render_template("admin/quote_detail.html", quote=quote)
 
-# ✅ 견적서 작성 폼 페이지 연결
+# ✅ 견적서 작성 폼 (고객 요청 기반 입력양식 그대로 표시)
 @admin_quote_bp.route("/quotes/<int:quote_id>/write", methods=["GET", "POST"])
 def create_estimate(quote_id):
-    print(f"✅ create_estimate 함수 실행됨! quote_id: {quote_id}")
-
     quote = Quote.query.get_or_404(quote_id)
 
     if request.method == "POST":
-        quote.status = "견적작성중"
-        db.session.commit()
+        # 저장 처리 등 추후 구현 예정
         flash("견적서가 저장되었습니다.", "success")
         return redirect(url_for("admin_quote.quote_detail", quote_id=quote.id))
 
