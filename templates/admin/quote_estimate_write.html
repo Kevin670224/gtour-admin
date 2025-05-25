@@ -1,74 +1,216 @@
 {% extends "admin/layout.html" %}
-
-{% block title %}견적서 작성{% endblock %}
+{% block title %}✍ 맞춤 견적 작성{% endblock %}
 
 {% block content %}
 <style>
   .quote-box {
-    border: 2px solid #ccc;
+    border: 2px solid #ddd;
+    border-radius: 12px;
     padding: 30px;
-    border-radius: 15px;
     background-color: #fff;
+    margin-top: 20px;
   }
-  .quote-box h2 {
+  .quote-title {
+    background-color: #007bff;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 12px 12px 0 0;
     font-size: 24px;
     font-weight: bold;
-    background-color: #0d6efd;
-    color: white;
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 30px;
-    text-align: center;
-  }
-  .form-section label {
-    font-weight: bold;
-    margin-bottom: 5px;
   }
   .form-section {
+    margin-top: 30px;
+  }
+  .form-section h4 {
+    font-weight: bold;
     margin-bottom: 20px;
   }
 </style>
 
-<div class="container mt-4">
-  <div class="quote-box">
-    <h2>📝 고객 요청 기반 견적서 작성</h2>
+<div class="quote-box">
+  <div class="quote-title">✍ 맞춤 견적 작성</div>
 
-    <form method="POST" action="">
-      <!-- 담당자 이름 -->
-      <div class="form-section">
-        <label>담당자 이름</label>
-        <input type="text" name="manager_name" class="form-control" required>
+  <form method="POST" action="/admin/quotes/{{ quote.id }}/write">
+    <div class="form-section">
+      <h4>고객 정보</h4>
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label>이름</label>
+          <input type="text" class="form-control" value="{{ quote.name }}" readonly>
+        </div>
+        <div class="col-md-4">
+          <label>전화번호</label>
+          <input type="text" class="form-control" value="{{ quote.phone }}" readonly>
+        </div>
+        <div class="col-md-4">
+          <label>이메일</label>
+          <input type="email" class="form-control" value="{{ quote.email }}" readonly>
+        </div>
       </div>
+    </div>
 
-      <!-- 여행 일정 요약 -->
-      <div class="form-section">
-        <label>여행 일정 요약</label>
-        <textarea name="itinerary_summary" class="form-control" rows="3" placeholder="예: 1일차 방콕 시티투어, 2일차 파타야 바닷가..."></textarea>
+    <div class="form-section">
+      <h4>투어상품 선택</h4>
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label>국가</label>
+          <select name="country" class="form-control" id="countrySelect"></select>
+        </div>
+        <div class="col-md-4">
+          <label>지역</label>
+          <select name="region" class="form-control" id="regionSelect"></select>
+        </div>
+        <div class="col-md-4">
+          <label>상품명</label>
+          <select name="product" class="form-control" id="productSelect"></select>
+        </div>
       </div>
+      <input type="text" name="custom_product" class="form-control" placeholder="원하시는 투어 형태를 자유롭게 입력해 주세요!">
+    </div>
 
-      <!-- 포함 내역 -->
-      <div class="form-section">
-        <label>포함 내역</label>
-        <textarea name="included_items" class="form-control" rows="3"></textarea>
-      </div>
+    <div class="form-section">
+      <h4>여행기간</h4>
+      <input type="text" class="form-control" name="travel_period" id="travelPeriod" placeholder="날짜를 선택하세요">
+    </div>
 
-      <!-- 불포함 내역 -->
-      <div class="form-section">
-        <label>불포함 내역</label>
-        <textarea name="excluded_items" class="form-control" rows="3"></textarea>
+    <div class="form-section">
+      <h4>총 인원</h4>
+      <div class="row">
+        <div class="col-md-2">
+          <label>성인</label>
+          <input type="number" name="adults" class="form-control" value="{{ quote.adults }}">
+        </div>
+        <div class="col-md-2">
+          <label>아동</label>
+          <input type="number" name="children" class="form-control" value="{{ quote.children }}">
+        </div>
+        <div class="col-md-2">
+          <label>유아</label>
+          <input type="number" name="infants" class="form-control" value="{{ quote.infants }}">
+        </div>
+        <div class="col-md-3">
+          <label>총 인원</label>
+          <input type="text" id="totalPeople" class="form-control" readonly>
+        </div>
       </div>
+    </div>
 
-      <!-- 총 견적 금액 -->
-      <div class="form-section">
-        <label>총 견적 금액 (₩)</label>
-        <input type="number" name="total_price" class="form-control" required>
+    <div class="form-section">
+      <h4>항공 정보</h4>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="flight_status" value="추천" id="flight1" checked>
+        <label class="form-check-label" for="flight1">예약 전 (가이드 4U 추천)</label>
       </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="flight_status" value="직접예약" id="flight2">
+        <label class="form-check-label" for="flight2">예약 전 (직접 예약 예정)</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="flight_status" value="예약완료" id="flight3">
+        <label class="form-check-label" for="flight3">예약 완료</label>
+      </div>
+      <div id="flightDetail" class="mt-3" style="display: none;">
+        <div class="row">
+          <div class="col-md-3">
+            <input type="text" name="departure_flight" class="form-control" placeholder="출국편명">
+          </div>
+          <div class="col-md-3">
+            <input type="text" name="return_flight" class="form-control" placeholder="귀국편명">
+          </div>
+          <div class="col-md-3">
+            <input type="text" name="departure_time" class="form-control" placeholder="출국시간">
+          </div>
+          <div class="col-md-3">
+            <input type="text" name="return_time" class="form-control" placeholder="귀국시간">
+          </div>
+        </div>
+      </div>
+    </div>
 
-      <!-- 저장 버튼 -->
-      <div class="text-center">
-        <button type="submit" class="btn btn-primary">💾 견적서 저장</button>
+    <div class="form-section">
+      <h4>리조트 정보</h4>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="resort_status" value="추천" id="resort1" checked>
+        <label class="form-check-label" for="resort1">예약 전 (가이드 4U 추천)</label>
       </div>
-    </form>
-  </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="resort_status" value="직접예약" id="resort2">
+        <label class="form-check-label" for="resort2">예약 전 (직접 예약 예정)</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="resort_status" value="예약완료" id="resort3">
+        <label class="form-check-label" for="resort3">예약 완료</label>
+      </div>
+      <input type="text" id="resortNameInput" name="resort_name" class="form-control mt-2" style="display:none;" placeholder="예약하신 리조트 이름을 입력 해주세요!">
+
+      <div class="mt-3">
+        <label>원하는 리조트 스타일</label><br>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" name="resort_style" value="4성급">
+          <label class="form-check-label">4성급</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" name="resort_style" value="5성급">
+          <label class="form-check-label">5성급</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" name="resort_style" value="풀빌라">
+          <label class="form-check-label">풀빌라</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h4>기타 요청사항</h4>
+      <textarea name="additional_request" class="form-control" rows="4" placeholder="기타 요청사항을 입력하세요"></textarea>
+    </div>
+
+    <div class="text-end mt-4">
+      <button type="submit" class="btn btn-primary btn-lg">견적 작성 완료</button>
+    </div>
+  </form>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+  flatpickr("#travelPeriod", {
+    mode: "range",
+    dateFormat: "Y-m-d",
+    minDate: "today",
+    locale: "ko"
+  });
+
+  function updateTotalPeople() {
+    const adults = parseInt(document.querySelector('input[name="adults"]').value || 0);
+    const children = parseInt(document.querySelector('input[name="children"]').value || 0);
+    const infants = parseInt(document.querySelector('input[name="infants"]').value || 0);
+    document.getElementById("totalPeople").value = adults + children + infants;
+  }
+
+  ['adults', 'children', 'infants'].forEach(name => {
+    document.querySelector(`input[name="${name}"]`).addEventListener('input', updateTotalPeople);
+  });
+
+  updateTotalPeople();
+
+  document.getElementById("flight3").addEventListener("change", function () {
+    document.getElementById("flightDetail").style.display = "block";
+  });
+  document.getElementById("flight1").addEventListener("change", function () {
+    document.getElementById("flightDetail").style.display = "none";
+  });
+  document.getElementById("flight2").addEventListener("change", function () {
+    document.getElementById("flightDetail").style.display = "none";
+  });
+
+  document.getElementById("resort3").addEventListener("change", function () {
+    document.getElementById("resortNameInput").style.display = "block";
+  });
+  document.getElementById("resort1").addEventListener("change", function () {
+    document.getElementById("resortNameInput").style.display = "none";
+  });
+  document.getElementById("resort2").addEventListener("change", function () {
+    document.getElementById("resortNameInput").style.display = "none";
+  });
+</script>
 {% endblock %}
