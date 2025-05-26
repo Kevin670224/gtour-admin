@@ -1,0 +1,36 @@
+{% extends "admin/layout.html" %}
+
+{% block title %}맞춤 견적 요청 목록{% endblock %}
+
+{% block content %}
+<table class="table table-bordered mt-4 text-center">
+  <thead class="table-light">
+    <tr>
+      <th>고객명</th>
+      <th>연락처</th>
+      <th>이메일</th>
+      <th>국가</th>
+      <th>지역</th>
+      <th>상품</th>
+      <th>총인원</th>
+      <th>여행기간</th>
+      <th>상태</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for q in quotes %}
+    <tr>
+      <td>{{ q.customer_name }}</td>
+      <td>{{ q.phone }}</td>
+      <td>{{ q.email }}</td>
+      <td>{{ q.country }}</td>
+      <td>{{ q.region }}</td>
+      <td>{{ q.product }}</td>
+      <td>{{ q.adults + q.children + q.infants }}</td>
+      <td>{{ q.travel_start }} ~ {{ q.travel_end }}</td>
+      <td>{{ q.status }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
